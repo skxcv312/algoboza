@@ -12,7 +12,7 @@ public class test {
 
     @GetMapping("/")
     public ResponseEntity<?> test() {
-        return Response.builder()//sdfsadf
+        return Response.builder()
                 .status(HttpStatus.OK)
                 .massage("넌 성공이다")
                 .build();
