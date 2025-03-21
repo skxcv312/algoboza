@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: arcteryx
+    
+  datasource:
+    url: jdbc:mysql://${DB_HOST}/demo_1
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+
+  jpa:
+    hibernate:
+      ddl-auto: update  # (create, update, validate, none ? ??)
+    show-sql: false       # ???? SQL ?? ?? ??
+    properties:
+      hibernate:
+        format_sql: true # SQL? ?? ?? ??
+
+  # Logging Setting
+  logging:
+    level:
+      root: INFO
+    logback:
+      rollingpolicy:
+        max-file-size: 10MB
+    file:
+      name: log/arcteryx.log
+
+jwt:
+  secret: ${JWT_SECRET_KEY}
+
+server:
+      url: ${SERVER_URL}
+
