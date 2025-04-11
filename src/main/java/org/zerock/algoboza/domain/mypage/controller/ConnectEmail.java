@@ -45,7 +45,7 @@ public class ConnectEmail {
         return Response.builder()
                 .status(HttpStatus.OK)
                 .data(connectEmailService.ConnectionEmailStatus(userEmail))
-                .massage("수정 됌")
+                .message("수정 됌")
                 .build();
     }
 
@@ -61,11 +61,10 @@ public class ConnectEmail {
         String userEmail = authService.getUserContext().getEmail();
         connectEmailService.addEmails(userEmail, request.email());
 
-
         return Response.builder()
                 .status(HttpStatus.OK)
                 .data(connectEmailService.ConnectionEmailStatus(userEmail))
-                .massage("추가 완료")
+                .message("추가 완료")
                 .build();
     }
 
@@ -76,7 +75,7 @@ public class ConnectEmail {
 
         return Response.builder()
                 .status(HttpStatus.OK)
-                .massage("조회 성공")
+                .message("조회 성공")
                 .data(connectEmailService.ConnectionEmailStatus(userEmail))
                 .build();
 

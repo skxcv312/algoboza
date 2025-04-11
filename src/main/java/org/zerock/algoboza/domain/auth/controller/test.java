@@ -14,7 +14,7 @@ public class test {
     public ResponseEntity<?> test() {
         return Response.builder()
                 .status(HttpStatus.OK)
-                .massage("넌 2번째 성공이다")
+                .message("넌 2번째 성공이다")
                 .build();
     }
 }

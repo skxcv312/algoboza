@@ -23,7 +23,7 @@ public class Unsubscribe {
 
         return Response.builder()
                 .status(HttpStatus.OK)
-                .massage("Unsubscribed")
+                .message("Unsubscribed")
                 .headers(new HttpHeaders())
                 .build();
     }

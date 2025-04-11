@@ -36,7 +36,7 @@ public class Login {
         if (!authService.userEmailExist(loginDto.email())) {
             return Response.builder()
                     .status(HttpStatus.BAD_REQUEST)
-                    .massage("email을 확인해주세요.")
+                    .message("email을 확인해주세요.")
                     .build();
         }
 
@@ -45,7 +45,7 @@ public class Login {
         if (user == null) {
             return Response.builder()
                     .status(HttpStatus.BAD_REQUEST)
-                    .massage("password을 확인해주세요.")
+                    .message("password을 확인해주세요.")
                     .build();
         }
 
@@ -55,7 +55,7 @@ public class Login {
 
         return Response.builder()
                 .status(HttpStatus.OK)
-                .massage("로그인 성공")
+                .message("로그인 성공")
                 .data(tokenDTO)
                 .headers(headers)
                 .build();

@@ -45,7 +45,7 @@ public class Signup {
         if (authService.userEmailExist(signupDTO.email())) {
             return Response.builder()
                     .status(HttpStatus.BAD_REQUEST)
-                    .massage("가입된 유저")
+                    .message("가입된 유저")
                     .build();
         }
 
@@ -54,14 +54,13 @@ public class Signup {
 
         connectEmailService.addEmails(user.getEmail(), List.of(user.getEmail()));
 
-
         // creat token
         JwtTokenDTO jwtTokenDTO = jwtTokenProvider.createToken(user);
         HttpHeaders headers = jwtTokenProvider.setTokenToHeader(jwtTokenDTO);
 
         return Response.builder()
                 .status(HttpStatus.CREATED)
-                .massage("가입완료")
+                .message("가입완료")
                 .headers(headers)
                 .data(jwtTokenDTO)
                 .build();

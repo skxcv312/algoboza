@@ -1,20 +1,12 @@
 package org.zerock.algoboza.domain.youtube.DTO;
 
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
-import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.Map;
 
 @Builder
 public record InterestScoresDTO(
-        List<keyword> interest_scores
-) {
-    @Builder
-    public record keyword(
-            String keyword,
-            int scores
-    ) {
-    }
+        @JsonProperty("interest_scores") Map<String, Integer> interestScores) {
 }

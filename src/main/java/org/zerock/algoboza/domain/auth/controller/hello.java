@@ -15,7 +15,7 @@ public class hello {
     public ResponseEntity<?> hello() {
         return Response.builder()
                 .status(HttpStatus.OK)
-                .massage("Hello World")
+                .message("Hello World")
                 .build();
     }
 }
