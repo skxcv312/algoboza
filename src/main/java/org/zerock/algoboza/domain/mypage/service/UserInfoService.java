@@ -1,21 +1,19 @@
-package org.zerock.arcteryx.domain.mypage.service;
+package org.zerock.algoboza.domain.mypage.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.zerock.arcteryx.domain.auth.DTO.UserDTO;
-import org.zerock.arcteryx.domain.auth.service.AuthService;
-import org.zerock.arcteryx.domain.mypage.DTO.EmailIntegrationDTO;
-import org.zerock.arcteryx.domain.mypage.DTO.GetMyInfoResponse;
-import org.zerock.arcteryx.domain.mypage.controller.ConnectEmail;
-import org.zerock.arcteryx.domain.mypage.controller.UserInfo;
-import org.zerock.arcteryx.entity.EmailIntegration;
-import org.zerock.arcteryx.entity.UserEntity;
-import org.zerock.arcteryx.repository.EmailIntegrationRepo;
-import org.zerock.arcteryx.repository.UserRepo;
+import org.zerock.algoboza.domain.auth.DTO.UserDTO;
+import org.zerock.algoboza.domain.auth.service.AuthService;
+import org.zerock.algoboza.domain.mypage.DTO.GetMyInfoResponse;
+import org.zerock.algoboza.domain.mypage.controller.ConnectEmail;
+import org.zerock.algoboza.domain.mypage.controller.UserInfo;
+import org.zerock.algoboza.entity.EmailIntegration;
+import org.zerock.algoboza.entity.UserEntity;
+import org.zerock.algoboza.repository.EmailIntegrationRepo;
+import org.zerock.algoboza.repository.UserRepo;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

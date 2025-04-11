@@ -1,4 +1,4 @@
-package org.zerock.arcteryx.domain.auth.DTO;
+package org.zerock.algoboza.domain.auth.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package org.zerock.algoboza.config;
+package org.zerock.algoboza.global.config;
 
 
 import org.springframework.context.annotation.Bean;

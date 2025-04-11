@@ -1,9 +1,6 @@
-package org.zerock.arcteryx.global.AOP;
+package org.zerock.algoboza.global.AOP;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.aspectj.lang.JoinPoint;
@@ -12,7 +9,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
-import org.zerock.arcteryx.global.JsonUtils;
+import org.zerock.algoboza.global.JsonUtils;
 
 @Log4j2
 @Aspect

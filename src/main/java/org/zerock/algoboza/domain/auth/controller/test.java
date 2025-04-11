@@ -1,11 +1,11 @@
-package org.zerock.arcteryx.domain.auth.controller;
+package org.zerock.algoboza.domain.auth.controller;
 
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.zerock.arcteryx.global.Response;
+import org.zerock.algoboza.global.Response;
 
 @RestController
 public class test {

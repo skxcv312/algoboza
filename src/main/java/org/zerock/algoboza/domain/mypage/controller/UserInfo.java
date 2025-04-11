@@ -1,4 +1,4 @@
-package org.zerock.arcteryx.domain.mypage.controller;
+package org.zerock.algoboza.domain.mypage.controller;
 
 
 import lombok.RequiredArgsConstructor;
@@ -6,14 +6,14 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.zerock.arcteryx.domain.auth.DTO.UserDTO;
-import org.zerock.arcteryx.domain.auth.service.AuthService;
-import org.zerock.arcteryx.domain.mypage.DTO.GetMyInfoResponse;
-import org.zerock.arcteryx.global.Response;
-import org.zerock.arcteryx.entity.UserEntity;
-import org.zerock.arcteryx.provider.jwtToken.JwtTokenDTO;
-import org.zerock.arcteryx.provider.jwtToken.JwtTokenProvider;
-import org.zerock.arcteryx.domain.mypage.service.UserInfoService;
+import org.zerock.algoboza.domain.auth.DTO.UserDTO;
+import org.zerock.algoboza.domain.auth.service.AuthService;
+import org.zerock.algoboza.domain.mypage.DTO.GetMyInfoResponse;
+import org.zerock.algoboza.global.Response;
+import org.zerock.algoboza.entity.UserEntity;
+import org.zerock.algoboza.provider.jwtToken.JwtTokenDTO;
+import org.zerock.algoboza.provider.jwtToken.JwtTokenProvider;
+import org.zerock.algoboza.domain.mypage.service.UserInfoService;
 
 @RequiredArgsConstructor
 @RestController

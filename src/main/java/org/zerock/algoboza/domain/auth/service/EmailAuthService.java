@@ -1,4 +1,4 @@
-package org.zerock.arcteryx.domain.auth.service;
+package org.zerock.algoboza.domain.auth.service;
 
 
 import jakarta.mail.MessagingException;
@@ -58,8 +58,7 @@ public class EmailAuthService {
             helper.setSubject("[Acteryx] 이메일 인증 요청");
 
             return message;
-        }
-        catch(MessagingException e) {
+        } catch (MessagingException e) {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }

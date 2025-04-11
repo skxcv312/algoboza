@@ -1,14 +1,14 @@
-package org.zerock.arcteryx.domain.auth.service;
+package org.zerock.algoboza.domain.auth.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.zerock.arcteryx.domain.auth.DTO.UserDTO;
-import org.zerock.arcteryx.domain.auth.controller.Signup;
-import org.zerock.arcteryx.entity.UserEntity;
-import org.zerock.arcteryx.repository.UserRepo;
+import org.zerock.algoboza.domain.auth.DTO.UserDTO;
+import org.zerock.algoboza.domain.auth.controller.Signup;
+import org.zerock.algoboza.entity.UserEntity;
+import org.zerock.algoboza.repository.UserRepo;
 
 @Log4j2
 @Service

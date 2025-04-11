@@ -1,15 +1,12 @@
-package org.zerock.arcteryx.entity;
+package org.zerock.algoboza.entity;
 
 
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.zerock.arcteryx.domain.mypage.DTO.EmailIntegrationDTO;
-import org.zerock.arcteryx.global.BaseTimeEntity;
-
-import java.time.Instant;
-import java.util.Date;
+import org.zerock.algoboza.domain.mypage.DTO.EmailIntegrationDTO;
+import org.zerock.algoboza.global.BaseTimeEntity;
 
 @Entity
 @Builder

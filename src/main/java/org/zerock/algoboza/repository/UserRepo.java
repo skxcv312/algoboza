@@ -1,11 +1,11 @@
-package org.zerock.arcteryx.repository;
+package org.zerock.algoboza.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import org.zerock.arcteryx.entity.UserEntity;
+import org.zerock.algoboza.entity.UserEntity;
 
 @Repository
-public interface UserRepo extends JpaRepository<UserEntity, Long>  {
+public interface UserRepo extends JpaRepository<UserEntity, Long> {
 
     UserEntity findByEmail(String email);
 

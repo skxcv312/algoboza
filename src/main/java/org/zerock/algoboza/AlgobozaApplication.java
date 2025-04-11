@@ -1,13 +1,13 @@
-package org.zerock.arcteryx;
+package org.zerock.algoboza;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ArcteryxApplication {
+public class AlgobozaApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ArcteryxApplication.class, args);
+        SpringApplication.run(AlgobozaApplication.class, args);
     }
 
 }

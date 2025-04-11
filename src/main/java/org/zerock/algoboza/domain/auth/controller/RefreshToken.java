@@ -1,4 +1,4 @@
-package org.zerock.arcteryx.domain.auth.controller;
+package org.zerock.algoboza.domain.auth.controller;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -9,9 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
-import org.zerock.arcteryx.global.Response;
-import org.zerock.arcteryx.provider.jwtToken.JwtTokenDTO;
-import org.zerock.arcteryx.provider.jwtToken.JwtTokenProvider;
+import org.zerock.algoboza.global.Response;
+import org.zerock.algoboza.provider.jwtToken.JwtTokenDTO;
+import org.zerock.algoboza.provider.jwtToken.JwtTokenProvider;
 
 @RequiredArgsConstructor
 @RestController

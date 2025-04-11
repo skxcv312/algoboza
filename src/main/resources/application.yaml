@@ -1,12 +1,20 @@
 spring:
   application:
-    name: arcteryx
-    
+    name: algoboza
+
   datasource:
     url: jdbc:mysql://${DB_HOST}/demo_1
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+  docker:
+    compose:
+      enabled: ${DOCKER_ENABLED}
+
+  output:
+    ansi:
+      enabled: always
 
 
   jpa:
@@ -17,19 +25,32 @@ spring:
       hibernate:
         format_sql: true # SQL? ?? ?? ??
 
+  # Google smtp server 사용
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${GOOGLE_EMAIL} #앱 비밀번호 발급받은 google 계정
+    password: ${GOOGLE_PASSWORD} #발급받은 앱 비밀번호
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
+
   # Logging Setting
   logging:
     level:
       root: INFO
     logback:
-      rollingpolicy:
+      rolling-policy:
         max-file-size: 10MB
     file:
-      name: log/arcteryx.log
+      name: log/demo1.log
+
 
 jwt:
   secret: ${JWT_SECRET_KEY}
 
-server:
-      url: ${SERVER_URL}
+
 

@@ -1,4 +1,4 @@
-package org.zerock.arcteryx.provider.jwtToken;
+package org.zerock.algoboza.provider.jwtToken;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -13,7 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.zerock.arcteryx.domain.auth.service.CustomUserDetailsService;
+import org.zerock.algoboza.domain.auth.service.CustomUserDetailsService;
 
 import java.io.IOException;
 import java.util.List;
@@ -37,6 +37,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
 
             String authHeader = request.getHeader("Authorization");
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN); // 403
+                return;
+            }
 
             String token = authHeader.substring(7);
 

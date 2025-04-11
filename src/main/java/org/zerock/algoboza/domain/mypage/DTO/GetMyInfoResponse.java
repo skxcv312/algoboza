@@ -1,7 +1,6 @@
-package org.zerock.arcteryx.domain.mypage.DTO;
+package org.zerock.algoboza.domain.mypage.DTO;
 
 import lombok.Builder;
-import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.List;

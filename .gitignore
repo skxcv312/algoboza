@@ -5,6 +5,9 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+compose.yaml
+/logs
+
 ### STS ###
 .apt_generated
 .classpath

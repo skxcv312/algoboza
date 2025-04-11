@@ -1,4 +1,4 @@
-package org.zerock.arcteryx.domain.mypage.controller;
+package org.zerock.algoboza.domain.mypage.controller;
 
 
 import lombok.Builder;
@@ -6,10 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.zerock.arcteryx.domain.auth.service.AuthService;
-import org.zerock.arcteryx.global.Response;
-import org.zerock.arcteryx.provider.jwtToken.JwtTokenProvider;
-import org.zerock.arcteryx.domain.mypage.service.ConnectEmailService;
+import org.zerock.algoboza.domain.auth.service.AuthService;
+import org.zerock.algoboza.global.Response;
+import org.zerock.algoboza.provider.jwtToken.JwtTokenProvider;
+import org.zerock.algoboza.domain.mypage.service.ConnectEmailService;
 
 import java.util.List;
 

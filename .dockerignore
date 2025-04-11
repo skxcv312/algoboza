@@ -1,0 +1,14 @@
+.git
+.github/
+.idea/
+.gradle/
+build/
+!build/libs/*.jar
+logs/
+src/
+*.iml
+.Dockerfile
+.docker-compose.yml
+gradlew.bat
+settings.gradle
+HELP.md

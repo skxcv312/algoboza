@@ -1,40 +1,44 @@
-<!--<?xml version="1.0" encoding="UTF-8"?>-->
-<!--<configuration>-->
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <!-- 로그 파일 저장 경로 -->
+    <property name="LOG_PATH" value="./logs" />
+    <property name="LOG_FILE_NAME" value="demo1" />
 
-<!--    &lt;!&ndash; 로그 파일 저장 경로 &ndash;&gt;-->
-<!--    <property name="LOG_PATH" value="./logs" />-->
-<!--    <property name="LOG_FILE_NAME" value="demo1" />-->
+    <!-- 날짜 + 용량 기준 롤링 -->
+    <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/${LOG_FILE_NAME}.log</file>
 
-<!--    &lt;!&ndash; 날짜 + 용량 기준 롤링 &ndash;&gt;-->
-<!--    <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
-<!--        <file>${LOG_PATH}/${LOG_FILE_NAME}.log</file>-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 날짜 및 크기 기반 파일명 -->
+            <fileNamePattern>${LOG_PATH}/${LOG_FILE_NAME}.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
 
-<!--        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">-->
-<!--            &lt;!&ndash; 날짜 및 크기 기반 파일명 &ndash;&gt;-->
-<!--            <fileNamePattern>${LOG_PATH}/${LOG_FILE_NAME}.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>-->
+            <!-- 하루마다 새 파일 생성 -->
+            <maxHistory>14</maxHistory> <!-- 최대 보관 일수 -->
+            <maxFileSize>10MB</maxFileSize> <!-- 파일 하나당 최대 크기 -->
+            <totalSizeCap>1GB</totalSizeCap> <!-- 전체 용량 초과 시 오래된 로그 삭제 -->
+        </rollingPolicy>
 
-<!--            &lt;!&ndash; 하루마다 새 파일 생성 &ndash;&gt;-->
-<!--            <maxHistory>14</maxHistory> &lt;!&ndash; 최대 보관 일수 &ndash;&gt;-->
-<!--            <maxFileSize>10MB</maxFileSize> &lt;!&ndash; 파일 하나당 최대 크기 &ndash;&gt;-->
-<!--            <totalSizeCap>1GB</totalSizeCap> &lt;!&ndash; 전체 용량 초과 시 오래된 로그 삭제 &ndash;&gt;-->
-<!--        </rollingPolicy>-->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
 
-<!--        <encoder>-->
-<!--            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>-->
-<!--        </encoder>-->
-<!--    </appender>-->
+    <!-- 콘솔 로그 Appender -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                %green(%d{yyyy-MM-dd HH:mm:ss.SSS}) %magenta([%-25thread]) %clr(%-5level) %cyan(%logger) : %msg%n
+            </pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
 
-<!--    &lt;!&ndash; 콘솔에도 출력 (선택) &ndash;&gt;-->
-<!--    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">-->
-<!--        <encoder>-->
-<!--            <pattern>%d{HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>-->
-<!--        </encoder>-->
-<!--    </appender>-->
+    <!-- 루트 로그 설정 -->
+    <root level="INFO">
+        <appender-ref ref="ROLLING" />
+        <appender-ref ref="CONSOLE" />
+    </root>
 
-<!--    &lt;!&ndash; 루트 로그 설정 &ndash;&gt;-->
-<!--    <root level="INFO">-->
-<!--        <appender-ref ref="ROLLING" />-->
-<!--        <appender-ref ref="STDOUT" />-->
-<!--    </root>-->
-
-<!--</configuration>-->
+</configuration>

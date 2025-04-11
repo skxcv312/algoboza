@@ -1,4 +1,4 @@
-package org.zerock.arcteryx.global;
+package org.zerock.algoboza.global;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;

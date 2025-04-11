@@ -1,17 +1,12 @@
-package org.zerock.arcteryx.domain.auth.controller;
+package org.zerock.algoboza.domain.auth.controller;
 
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.zerock.arcteryx.domain.auth.DTO.UserDTO;
-import org.zerock.arcteryx.domain.auth.service.AuthService;
-import org.zerock.arcteryx.entity.UserEntity;
-import org.zerock.arcteryx.global.Response;
-import org.zerock.arcteryx.provider.jwtToken.JwtTokenProvider;
+import org.zerock.algoboza.global.Response;
 
 @RequiredArgsConstructor
 @RestController

@@ -1,4 +1,4 @@
-package org.zerock.arcteryx.global;
+package org.zerock.algoboza.global;
 
 import lombok.*;
 import lombok.extern.log4j.Log4j2;

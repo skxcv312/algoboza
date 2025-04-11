@@ -1,12 +1,11 @@
-package org.zerock.arcteryx.domain.mypage.DTO;
+package org.zerock.algoboza.domain.mypage.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.zerock.arcteryx.entity.UserEntity;
+import org.zerock.algoboza.entity.UserEntity;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 

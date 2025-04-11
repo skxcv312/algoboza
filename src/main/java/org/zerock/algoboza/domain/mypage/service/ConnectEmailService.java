@@ -1,16 +1,16 @@
-package org.zerock.arcteryx.domain.mypage.service;
+package org.zerock.algoboza.domain.mypage.service;
 
 
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.zerock.arcteryx.domain.mypage.DTO.EmailIntegrationDTO;
-import org.zerock.arcteryx.domain.mypage.controller.ConnectEmail;
-import org.zerock.arcteryx.entity.EmailIntegration;
-import org.zerock.arcteryx.entity.UserEntity;
-import org.zerock.arcteryx.repository.EmailIntegrationRepo;
-import org.zerock.arcteryx.repository.UserRepo;
+import org.zerock.algoboza.domain.mypage.DTO.EmailIntegrationDTO;
+import org.zerock.algoboza.domain.mypage.controller.ConnectEmail;
+import org.zerock.algoboza.entity.EmailIntegration;
+import org.zerock.algoboza.entity.UserEntity;
+import org.zerock.algoboza.repository.EmailIntegrationRepo;
+import org.zerock.algoboza.repository.UserRepo;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

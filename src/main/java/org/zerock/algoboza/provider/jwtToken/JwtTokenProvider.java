@@ -1,8 +1,5 @@
-package org.zerock.arcteryx.provider.jwtToken;
+package org.zerock.algoboza.provider.jwtToken;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,13 +7,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.zerock.arcteryx.domain.auth.DTO.UserDTO;
-import org.zerock.arcteryx.config.JwtConfig;
-import org.zerock.arcteryx.domain.auth.service.AuthService;
-import org.zerock.arcteryx.entity.UserEntity;
-import org.zerock.arcteryx.global.JsonUtils;
-import org.zerock.arcteryx.repository.UserRepo;
+import org.zerock.algoboza.domain.auth.DTO.UserDTO;
+import org.zerock.algoboza.global.config.JwtConfig;
+import org.zerock.algoboza.entity.UserEntity;
+import org.zerock.algoboza.global.JsonUtils;
+import org.zerock.algoboza.repository.UserRepo;
 
 import javax.crypto.SecretKey;
 import java.util.Date;

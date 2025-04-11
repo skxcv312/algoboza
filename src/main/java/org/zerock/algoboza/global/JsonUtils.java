@@ -1,4 +1,4 @@
-package org.zerock.arcteryx.global;
+package org.zerock.algoboza.global;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class JsonUtils {
-
     private final ObjectMapper objectMapper;
 
     @PostConstruct

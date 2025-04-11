@@ -1,8 +1,8 @@
-package org.zerock.arcteryx.repository;
+package org.zerock.algoboza.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.zerock.arcteryx.entity.EmailIntegration;
-import org.zerock.arcteryx.entity.UserEntity;
+import org.zerock.algoboza.entity.EmailIntegration;
+import org.zerock.algoboza.entity.UserEntity;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package org.zerock.arcteryx.provider.jwtToken;
+package org.zerock.algoboza.provider.jwtToken;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
