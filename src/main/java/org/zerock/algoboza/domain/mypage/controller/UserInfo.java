@@ -32,7 +32,7 @@ public class UserInfo {
         GetMyInfoResponse response = userInfoService.getMyInfo(user);
         return Response.builder()
                 .status(HttpStatus.OK)
-                .massage("조회 성공")
+                .message("조회 성공")
                 .data(response)
                 .build();
     }
@@ -55,7 +55,7 @@ public class UserInfo {
                 .status(HttpStatus.OK)
                 .headers(headers)
                 .data(newUserDTO)
-                .massage("수정 완료")
+                .message("수정 완료")
                 .build();
     }
 
@@ -72,7 +72,7 @@ public class UserInfo {
 
         return Response.builder()
                 .status(HttpStatus.OK)
-                .massage("비밀번호 바뀜")
+                .message("비밀번호 바뀜")
                 .build();
     }
 }

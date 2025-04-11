@@ -19,7 +19,8 @@ public class RefreshToken {
     private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/refresh-token")
-    public ResponseEntity<?> getRefreshToken(@RequestHeader("RefreshToken") String refreshToken) throws JsonProcessingException {
+    public ResponseEntity<?> getRefreshToken(@RequestHeader("RefreshToken") String refreshToken)
+            throws JsonProcessingException {
 
         // 재발급
         JwtTokenDTO newToken = jwtTokenProvider.getTokenWithRefresh(refreshToken);
@@ -27,7 +28,7 @@ public class RefreshToken {
 
         return Response.builder()
                 .status(HttpStatus.OK)
-                .massage("Issue a new token")
+                .message("Issue a new token")
                 .headers(headers)
                 .data(newToken)
                 .build();
