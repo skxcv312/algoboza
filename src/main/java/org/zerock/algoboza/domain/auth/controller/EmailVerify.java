@@ -35,7 +35,7 @@ public class EmailVerify {
         return Response.builder()
                 .data(data)
                 .status(HttpStatus.OK)
-                .massage("Verification email sent")
+                .message("Verification email sent")
                 .build();
 
     }

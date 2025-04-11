@@ -17,8 +17,8 @@ public class Response<T> extends ResponseEntity<Response.ResponseBody<T>> {
     }
 
     @Builder
-    public Response(HttpStatusCode status, HttpHeaders headers, String massage, T data) {
-        super(new ResponseBody<>(status.value(), massage, data), headers, status);
+    public Response(HttpStatusCode status, HttpHeaders headers, String message, T data) {
+        super(new ResponseBody<>(status.value(), message, data), headers, status);
     }
 
 }

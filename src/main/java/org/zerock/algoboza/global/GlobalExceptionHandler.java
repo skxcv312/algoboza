@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
         return Response.builder()
                 .status(HttpStatus.BAD_REQUEST)
                 .data("IllegalArgumentException")
-                .massage(ex.getMessage())
+                .message(ex.getMessage())
                 .build();
     }
 
@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
         return Response.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .data("Exception")
-                .massage(ex.getMessage())
+                .message(ex.getMessage())
                 .build();
     }
 
@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
         return Response.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .data("NullPointerException")
-                .massage(ex.getMessage())
+                .message(ex.getMessage())
                 .build();
     }
 
@@ -40,7 +40,7 @@ public class GlobalExceptionHandler {
         return Response.builder()
                 .status(HttpStatus.FORBIDDEN)
                 .data("ExpiredJwtException")
-                .massage(ex.getMessage())
+                .message(ex.getMessage())
                 .build();
     }
 
@@ -48,7 +48,7 @@ public class GlobalExceptionHandler {
     public Response<?> handleJwtException(JwtException ex) {
         return Response.builder()
                 .status(HttpStatus.FORBIDDEN)
-                .massage(ex.getMessage())
+                .message(ex.getMessage())
                 .data("JwtException")
                 .build();
     }

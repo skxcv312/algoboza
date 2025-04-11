@@ -17,7 +17,7 @@ public class Logout {
         // 헤더에 정보 삭제
         return Response.builder()
                 .status(HttpStatus.OK)
-                .massage("Successful logout")
+                .message("Successful logout")
                 .headers(new HttpHeaders())
                 .build();
 
