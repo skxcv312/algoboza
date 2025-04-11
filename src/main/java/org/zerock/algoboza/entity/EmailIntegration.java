@@ -1,24 +1,19 @@
 package org.zerock.algoboza.entity;
 
-
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.zerock.algoboza.domain.mypage.DTO.EmailIntegrationDTO;
-import org.zerock.algoboza.global.BaseTimeEntity;
+import org.zerock.algoboza.global.BaseEntity;
 
 @Entity
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@SuperBuilder
 @Getter
 @Setter
-public class EmailIntegration extends BaseTimeEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+@NoArgsConstructor
+public class EmailIntegration extends BaseEntity {
 
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -37,8 +32,7 @@ public class EmailIntegration extends BaseTimeEntity {
                 .email(this.email)
                 .platform(this.platform)
                 .user(this.user)
+                .creatAt(this.createdAt)
                 .build();
-
     }
-
 }

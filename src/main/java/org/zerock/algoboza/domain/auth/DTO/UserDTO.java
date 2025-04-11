@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 
 @Getter
 @AllArgsConstructor
@@ -19,6 +21,6 @@ public class UserDTO {
 
     private String birthDate;
 
-    private String createdAt;
+    private LocalDateTime createdAt;
 
 }
