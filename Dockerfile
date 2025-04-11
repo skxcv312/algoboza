@@ -1,10 +1,7 @@
-FROM ubuntu:latest
-LABEL authors="skxcv312"
-
 FROM eclipse-temurin:21-jdk
 
 ARG JAR_FILE=build/libs/*.jar
-COPY ${JAR_FILE} demo1.jar
+COPY ${JAR_FILE} algoboza.jar
 
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/demo1.jar"]
+ENTRYPOINT ["java", "-jar", "/algoboza.jar"]
