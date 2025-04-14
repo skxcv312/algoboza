@@ -35,6 +35,15 @@ public class GlobalExceptionHandler {
                 .build();
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    public Response<?> handleGeneral(RuntimeException ex) {
+        return Response.builder()
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .data("RuntimeException")
+                .message(ex.getMessage())
+                .build();
+    }
+
     @ExceptionHandler(ExpiredJwtException.class)
     public Response<?> handleExpiredJwtException(ExpiredJwtException ex) {
         return Response.builder()
