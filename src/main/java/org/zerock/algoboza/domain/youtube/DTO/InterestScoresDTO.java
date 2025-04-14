@@ -9,4 +9,7 @@ import java.util.Map;
 @Builder
 public record InterestScoresDTO(
         @JsonProperty("interest_scores") Map<String, Integer> interestScores) {
+    public Object exchangeToMono(Object o) {
+        return null;
+    }
 }

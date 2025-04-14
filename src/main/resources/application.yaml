@@ -45,6 +45,7 @@ spring:
     file:
       name: log/demo1.log
 
+server-url: ${SERVER_URL}
 
 jwt:
   secret: ${JWT_SECRET_KEY}
@@ -52,7 +53,10 @@ jwt:
 fast:
   api_key: ${FAST_API_KEY}
 
-  url: ${FAST_API_URL}
+proxy:
+  username: ${PROXY_USERNAME}
+  password: ${PROXY_PASSWORD}
+
 
 
 
