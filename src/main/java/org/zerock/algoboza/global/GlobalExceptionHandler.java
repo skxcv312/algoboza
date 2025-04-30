@@ -12,7 +12,6 @@ public class GlobalExceptionHandler {
     public Response<?> handleEmailNotFound(IllegalArgumentException ex) {
         return Response.builder()
                 .status(HttpStatus.BAD_REQUEST)
-                .data("IllegalArgumentException")
                 .message(ex.getMessage())
                 .build();
     }
@@ -21,7 +20,6 @@ public class GlobalExceptionHandler {
     public Response<?> handleGeneral(Exception ex) {
         return Response.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .data("Exception")
                 .message(ex.getMessage())
                 .build();
     }
@@ -30,7 +28,6 @@ public class GlobalExceptionHandler {
     public Response<?> handleNullPointer(NullPointerException ex) {
         return Response.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .data("NullPointerException")
                 .message(ex.getMessage())
                 .build();
     }
@@ -39,7 +36,6 @@ public class GlobalExceptionHandler {
     public Response<?> handleGeneral(RuntimeException ex) {
         return Response.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .data("RuntimeException")
                 .message(ex.getMessage())
                 .build();
     }
@@ -48,7 +44,6 @@ public class GlobalExceptionHandler {
     public Response<?> handleExpiredJwtException(ExpiredJwtException ex) {
         return Response.builder()
                 .status(HttpStatus.FORBIDDEN)
-                .data("ExpiredJwtException")
                 .message(ex.getMessage())
                 .build();
     }
@@ -58,7 +53,6 @@ public class GlobalExceptionHandler {
         return Response.builder()
                 .status(HttpStatus.FORBIDDEN)
                 .message(ex.getMessage())
-                .data("JwtException")
                 .build();
     }
 
