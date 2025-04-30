@@ -27,11 +27,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        String uri = request.getRequestURI();
+        log.info(uri);
         try {
             // SecurityConfig도 수정바람
             List<String> excludedPaths = List.of("/", "/login", "/signup", "/refresh-token", "/email/verify");
-            if (excludedPaths.contains(request.getRequestURI())) {
+            if (excludedPaths.contains(uri) || uri.startsWith("/api/collection/log/")) {
                 filterChain.doFilter(request, response);
                 return;
             }
@@ -45,7 +48,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             String token = authHeader.substring(7);
 
             String userEmail = tokenProvider.getUserEmail(token);
-
 
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(userEmail);
 

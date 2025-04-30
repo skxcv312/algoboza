@@ -16,7 +16,11 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         // 정확한 origin 명시 (credentials=true일 때 "*" 사용 금지!
-        config.setAllowedOrigins(List.of("http://192.168.219.174:5173", "http://localhost:5173"));
+        config.setAllowedOrigins(
+                List.of("http://192.168.219.174:5173",
+                        "http://localhost:5173",
+                        "chrome-extension://lflppaeeeiihpeppipkfbgbohebnlpcc" // 확장자
+                ));
 
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         config.setAllowedHeaders(List.of("*"));

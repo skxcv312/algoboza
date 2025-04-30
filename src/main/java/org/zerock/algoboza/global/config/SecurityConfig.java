@@ -25,8 +25,10 @@ public class SecurityConfig {
                 //filterChain 도 수정
                 .csrf(AbstractHttpConfigurer::disable) // REST API에서는 CSRF 비활성화
                 .cors(withDefaults())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 사용 안함 (JWT 사용)
+                .sessionManagement(
+                        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 사용 안함 (JWT 사용)
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/collection/log/**").permitAll()
                         .requestMatchers("/login").permitAll() // 로그인/회원가입은 인증 없이 허용
                         .requestMatchers("/signup").permitAll()
                         .requestMatchers("/refresh-token").permitAll()
