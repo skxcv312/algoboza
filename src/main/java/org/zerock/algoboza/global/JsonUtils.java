@@ -1,8 +1,10 @@
 package org.zerock.algoboza.global;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -35,4 +37,25 @@ public class JsonUtils {
             throw new RuntimeException("JSON deserialization failed", e);
         }
     }
+
+    public ObjectNode toObjectNode(String json) {
+        try {
+            JsonNode node = objectMapper.readTree(json);
+            if (node instanceof ObjectNode objectNode) {
+                return objectNode;
+            } else {
+                throw new IllegalArgumentException("JSON is not an object node.");
+            }
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Failed to parse JSON to ObjectNode", e);
+        }
+    }
+
+    public String safeGetText(JsonNode node, String key) {
+        if (node != null && node.has(key) && !node.get(key).isNull()) {
+            return node.get(key).asText();
+        }
+        return null;
+    }
+
 }

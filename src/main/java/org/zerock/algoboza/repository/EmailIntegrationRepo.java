@@ -1,18 +1,20 @@
 package org.zerock.algoboza.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.zerock.algoboza.entity.EmailIntegration;
+import org.springframework.stereotype.Repository;
+import org.zerock.algoboza.entity.EmailIntegrationEntity;
 import org.zerock.algoboza.entity.UserEntity;
 
 import java.util.List;
 
-public interface EmailIntegrationRepo extends JpaRepository<EmailIntegration, Long> {
-    public boolean existsByEmail(String email);
+@Repository
+public interface EmailIntegrationRepo extends JpaRepository<EmailIntegrationEntity, Long> {
+    boolean existsByEmail(String email);
 
-    public List<EmailIntegration> findByUser(UserEntity user);
+    List<EmailIntegrationEntity> findByUser(UserEntity user);
 
-    public EmailIntegration findByUserAndEmail(UserEntity user, String email);
+    EmailIntegrationEntity findByUserAndEmail(UserEntity user, String email);
 
-    public EmailIntegration findByEmail(String email);
+    EmailIntegrationEntity findByEmail(String email);
 
 }
