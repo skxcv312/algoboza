@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.zerock.algoboza.domain.auth.service.AuthService;
 import org.zerock.algoboza.domain.mypage.DTO.EmailIntegrationDTO;
 import org.zerock.algoboza.domain.mypage.controller.ConnectEmail;
 import org.zerock.algoboza.entity.EmailIntegration;
@@ -22,19 +23,21 @@ import java.util.List;
 public class ConnectEmailService {
     private final UserRepo userRepo;
     private final EmailIntegrationRepo emailIntegrationRepo;
+    private final AuthService authService;
 
 
     // 이메일 플랫폼 분리
     public String getPlatform(String email) {
-        if (email == null || !email.contains("@")) {
+        if (authService.isNotEmail(email)) { // 이메일 형식인지 확인
             throw new IllegalArgumentException("Invalid email format");
         }
+
         try {
             String domain = email.split("@")[1];       // e.g., "gmail.com"
             String platform = domain.split("\\.")[0];  // e.g., "gmail"
             return platform.toLowerCase();
         } catch (Exception e) {
-            return null;
+            throw new RuntimeException("Failed to get platform");
         }
     }
 
@@ -80,7 +83,6 @@ public class ConnectEmailService {
         if (user == null) {
             throw new IllegalArgumentException("User not found");
         }
-
 
         for (ConnectEmail.emailList dto : editEmailRequestList) {
             // 새로운 이메일이 널인경우 삭제로 본다

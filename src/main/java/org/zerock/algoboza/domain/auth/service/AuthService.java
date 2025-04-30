@@ -21,6 +21,11 @@ public class AuthService {
         return userRepo.existsByEmail(email);
     }
 
+    public boolean isNotEmail(String email) {
+        return email == null || !email.contains("@");
+    }
+
+
     public UserDTO matchesPassword(String email, String password) {
         UserEntity userEntity = userRepo.findByEmail(email);
         if (passwordEncoder.matches(password, userEntity.getPassword())) {
@@ -30,7 +35,10 @@ public class AuthService {
     }
 
     public UserDTO userSave(Signup.signupDTO signupDTO) {
-        log.info("signupDTO : " + signupDTO);
+        if (isNotEmail(signupDTO.email())) {
+            throw new IllegalArgumentException("Email address is incorrect");
+        }
+
         UserEntity user = UserEntity.builder()
                 .email(signupDTO.email())
                 .password(passwordEncoder.encode(signupDTO.password()))
