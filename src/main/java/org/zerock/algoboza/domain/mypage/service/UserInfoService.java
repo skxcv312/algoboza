@@ -9,7 +9,7 @@ import org.zerock.algoboza.domain.auth.service.AuthService;
 import org.zerock.algoboza.domain.mypage.DTO.GetMyInfoResponse;
 import org.zerock.algoboza.domain.mypage.controller.ConnectEmail;
 import org.zerock.algoboza.domain.mypage.controller.UserInfo;
-import org.zerock.algoboza.entity.EmailIntegration;
+import org.zerock.algoboza.entity.EmailIntegrationEntity;
 import org.zerock.algoboza.entity.UserEntity;
 import org.zerock.algoboza.repository.EmailIntegrationRepo;
 import org.zerock.algoboza.repository.UserRepo;
@@ -38,7 +38,8 @@ public class UserInfoService {
         connectEmailService.editConnectionEmail(oldUser.getEmail(), List.of(emailList));
 
         // 정보 수정
-        UserEntity user = userRepo.findById(oldUser.getId()).orElseThrow(() -> new IllegalArgumentException("User ID not found"));
+        UserEntity user = userRepo.findById(oldUser.getId())
+                .orElseThrow(() -> new IllegalArgumentException("User ID not found"));
         user.setName(newUserInfo.name());
         user.setEmail(newUserInfo.email());
         user.setBirthDate(newUserInfo.birthDate());
@@ -53,22 +54,23 @@ public class UserInfoService {
         if (passwordEncoder.matches(oldPassword, userEntity.getPassword())) {
             userEntity.setPassword(passwordEncoder.encode(newPassword));
             userRepo.save(userEntity);
-        } else throw new IllegalArgumentException("Old password does not match");
+        } else {
+            throw new IllegalArgumentException("Old password does not match");
+        }
     }
 
 
     public GetMyInfoResponse getMyInfo(UserEntity userEntity) {
 
-        List<EmailIntegration> emailIntegrationList = emailIntegrationRepo.findByUser(userEntity);
+        List<EmailIntegrationEntity> emailIntegrationEntityList = emailIntegrationRepo.findByUser(userEntity);
 
-        List<GetMyInfoResponse.ConnectionEmail> ConnectionEmailList = emailIntegrationList.stream()
-                .map(emailIntegration -> GetMyInfoResponse.ConnectionEmail.builder()
-                        .platform(emailIntegration.getPlatform())
-                        .email(emailIntegration.getEmail())
-                        .created_at(emailIntegration.getCreatedAt())
+        List<GetMyInfoResponse.ConnectionEmail> ConnectionEmailList = emailIntegrationEntityList.stream()
+                .map(emailIntegrationEntity -> GetMyInfoResponse.ConnectionEmail.builder()
+                        .platform(emailIntegrationEntity.getPlatform())
+                        .email(emailIntegrationEntity.getEmail())
+                        .created_at(emailIntegrationEntity.getCreatedAt())
                         .build()
                 ).toList();
-
 
         return GetMyInfoResponse.builder()
                 .birth_date(userEntity.getBirthDate())

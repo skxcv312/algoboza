@@ -1,4 +1,4 @@
-package org.zerock.algoboza.global;
+package org.zerock.algoboza.entity.base;
 
 import jakarta.persistence.*;
 import lombok.Getter;

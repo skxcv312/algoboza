@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class DotEnvConfig {
-    private static final Dotenv dotenv = Dotenv.load();
+    private static final Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();  // 파일 없으면 무시;
 
     public static String getEnv(String key) {
         return dotenv.get(key);

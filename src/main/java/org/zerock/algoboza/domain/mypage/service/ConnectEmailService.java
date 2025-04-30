@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zerock.algoboza.domain.auth.service.AuthService;
 import org.zerock.algoboza.domain.mypage.DTO.EmailIntegrationDTO;
 import org.zerock.algoboza.domain.mypage.controller.ConnectEmail;
-import org.zerock.algoboza.entity.EmailIntegration;
+import org.zerock.algoboza.entity.EmailIntegrationEntity;
 import org.zerock.algoboza.entity.UserEntity;
 import org.zerock.algoboza.repository.EmailIntegrationRepo;
 import org.zerock.algoboza.repository.UserRepo;
@@ -56,24 +56,24 @@ public class ConnectEmailService {
 
             String platform = getPlatform(newEmail);
 
-            EmailIntegration emailIntegration = EmailIntegration.builder()
+            EmailIntegrationEntity emailIntegrationEntity = EmailIntegrationEntity.builder()
                     .user(user)
                     .platform(platform)
                     .email(newEmail)
                     .build();
 
-            emailIntegrationRepo.save(emailIntegration);
+            emailIntegrationRepo.save(emailIntegrationEntity);
         }
         lookUpConnectionEmail(user.getEmail());
     }
 
     // 이메일 삭제
     public void deleteEmails(String email) {
-        EmailIntegration emailIntegration = emailIntegrationRepo.findByEmail(email);
-        if (emailIntegration == null) {
+        EmailIntegrationEntity emailIntegrationEntity = emailIntegrationRepo.findByEmail(email);
+        if (emailIntegrationEntity == null) {
             throw new IllegalArgumentException("Email not found");
         }
-        emailIntegrationRepo.delete(emailIntegration);
+        emailIntegrationRepo.delete(emailIntegrationEntity);
     }
 
     // 이메일 수정
@@ -91,15 +91,15 @@ public class ConnectEmailService {
                 continue;
             }
 
-            EmailIntegration emailIntegration = emailIntegrationRepo
+            EmailIntegrationEntity emailIntegrationEntity = emailIntegrationRepo
                     .findByUserAndEmail(user, dto.old_email());
 
-            if (emailIntegration == null) {
+            if (emailIntegrationEntity == null) {
                 throw new IllegalArgumentException("Email not found: " + dto.old_email());
             }
 
-            emailIntegration.setEmail(dto.new_email());
-            emailIntegration.setPlatform(getPlatform(dto.new_email()));
+            emailIntegrationEntity.setEmail(dto.new_email());
+            emailIntegrationEntity.setPlatform(getPlatform(dto.new_email()));
         }
 
     }

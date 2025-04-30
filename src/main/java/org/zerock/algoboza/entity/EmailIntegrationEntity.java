@@ -6,17 +6,18 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.zerock.algoboza.domain.mypage.DTO.EmailIntegrationDTO;
-import org.zerock.algoboza.global.BaseEntity;
+import org.zerock.algoboza.entity.base.BaseEntity;
 
 @Entity
 @SuperBuilder
 @Getter
 @Setter
 @NoArgsConstructor
-public class EmailIntegration extends BaseEntity {
+@Table(name = "EmailIntegration")
+public class EmailIntegrationEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // private → protected 변경
+    private Long id;
 
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne(fetch = FetchType.LAZY)

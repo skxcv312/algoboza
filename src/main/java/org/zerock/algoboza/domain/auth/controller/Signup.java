@@ -1,7 +1,6 @@
 package org.zerock.algoboza.domain.auth.controller;
 
 
-import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -23,7 +22,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 public class Signup {
-    private final Gson gson;
     private final AuthService authService;
     private final JwtTokenProvider jwtTokenProvider;
     private final ConnectEmailService connectEmailService;
