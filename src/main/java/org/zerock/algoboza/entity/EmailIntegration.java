@@ -14,6 +14,9 @@ import org.zerock.algoboza.global.BaseEntity;
 @Setter
 @NoArgsConstructor
 public class EmailIntegration extends BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id; // private → protected 변경
 
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne(fetch = FetchType.LAZY)

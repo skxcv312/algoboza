@@ -21,6 +21,9 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name = "User")
 public class UserEntity extends BaseEntity implements UserDetails {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id; // private → protected 변경
 
     @Column(nullable = false, unique = true)
     private String email;

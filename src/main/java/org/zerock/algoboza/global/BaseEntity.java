@@ -18,10 +18,6 @@ import java.time.LocalDateTime;
 @EntityListeners(value = {AuditingEntityListener.class})
 public abstract class BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long id; // private → protected 변경
-
     @CreatedDate
     @Column(name = "created_at", updatable = false)
     protected LocalDateTime createdAt;
