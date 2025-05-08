@@ -7,46 +7,71 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.zerock.algoboza.domain.auth.service.AuthService;
+import org.zerock.algoboza.domain.logCollection.DTO.CartDTO;
+import org.zerock.algoboza.domain.logCollection.DTO.CategoryDTO;
+import org.zerock.algoboza.domain.logCollection.DTO.ProductDTO;
+import org.zerock.algoboza.domain.logCollection.DTO.SearchDTO;
+import org.zerock.algoboza.domain.logCollection.service.CartLogService;
+import org.zerock.algoboza.domain.logCollection.service.CategoryLogService;
+import org.zerock.algoboza.domain.logCollection.service.ProductLogService;
+import org.zerock.algoboza.domain.logCollection.service.SearchLogService;
+import org.zerock.algoboza.domain.logCollection.service.impl.LogProcessor;
+import org.zerock.algoboza.entity.UserEntity;
 import org.zerock.algoboza.global.Response;
 
 @Log4j2
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/collection/log/")
+@RequestMapping("/api/log/collection/")
 public class CollectionController {
+    private final AuthService authService;
+    private final ProductLogService productLogService;
+    private final SearchLogService searchLogService;
+    private final CartLogService cartLogService;
+    private final CategoryLogService categoryLogService;
+
     @PostMapping("/search")
-    public Response<?> getSearchLog(@RequestBody String body) {
-        log.info(body);
+    public Response<?> searchLog(@RequestBody SearchDTO searchLogDTO) {
+        UserEntity user = authService.getUserContext();
+
+        // 로그 저장
+        searchLogService.saveTypeLog(user, searchLogDTO);
         return Response.builder()
                 .status(HttpStatus.OK)
-                .data(body)
+                .data(searchLogDTO)
                 .build();
     }
 
     @PostMapping("/product")
-    public Response<?> getProductLog(@RequestBody String body) {
-        log.info(body);
+    public Response<?> productLog(@RequestBody ProductDTO productLogDTO) {
+        UserEntity user = authService.getUserContext();
+        productLogService.saveTypeLog(user, productLogDTO);
+
         return Response.builder()
                 .status(HttpStatus.OK)
-                .data(body)
+                .data(productLogDTO)
                 .build();
     }
 
     @PostMapping("/category")
-    public Response<?> getCategoryLog(@RequestBody String body) {
-        log.info(body);
+    public Response<?> categoryLog(@RequestBody CategoryDTO categoryLogDTO) {
+        UserEntity user = authService.getUserContext();
+        categoryLogService.saveTypeLog(user, categoryLogDTO);
+
         return Response.builder()
                 .status(HttpStatus.OK)
-                .data(body)
+                .data(categoryLogDTO)
                 .build();
     }
 
     @PostMapping("/cart")
-    public Response<?> getCartLog(@RequestBody String body) {
-        log.info(body);
+    public Response<?> cartLog(@RequestBody CartDTO cartLogDTO) {
+        UserEntity user = authService.getUserContext();
+        cartLogService.saveTypeLog(user, cartLogDTO);
         return Response.builder()
                 .status(HttpStatus.OK)
-                .data(body)
+                .data(cartLogDTO)
                 .build();
     }
 }
