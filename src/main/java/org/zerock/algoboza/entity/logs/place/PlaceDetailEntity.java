@@ -9,6 +9,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.util.List;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
@@ -18,6 +19,7 @@ import org.zerock.algoboza.entity.base.BaseEntity;
 @Entity
 @Table(name = "place_detail")
 @SuperBuilder
+@Getter
 @NoArgsConstructor
 public class PlaceDetailEntity extends BaseEntity {
     @Id

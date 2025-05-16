@@ -30,8 +30,6 @@ public class RecommendYoutube {
     public Response<?> recommendYoutube(
             @AuthenticationPrincipal UserEntity userEntity
     ) {
-        ;
-
         // 유저 관심도 얻기
         InterestScoresDTO interestScores = recommendYoutubeService.getInterestScores(userEntity);
 
