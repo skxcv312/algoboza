@@ -24,12 +24,8 @@ public class WebClientConfig {
 
     @Bean
     public WebClient YoutubeBuilder() {
-        String port = ":8000";
-        log.info("Setting up Youtube client");
-        log.info("{}{}", URL, port);
-
         return WebClient.builder()
-                .baseUrl(URL + port)
+                .baseUrl(URL)
                 .defaultHeaders(headers -> {
                     headers.add("api-key", apiKey);
                     headers.add("content-type", "application/json");
@@ -38,4 +34,6 @@ public class WebClientConfig {
                 })
                 .build();
     }
+
+
 }
