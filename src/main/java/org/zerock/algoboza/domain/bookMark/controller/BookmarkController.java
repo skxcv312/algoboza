@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,8 +33,9 @@ public class BookmarkController {
     }
 
     @PostMapping()
-    public Response<?> postContent(@RequestBody postContentRequest Request) {
-        UserEntity user = authService.getUserContext();
+    public Response<?> postContent(
+            @AuthenticationPrincipal UserEntity user,
+            @RequestBody postContentRequest Request) {
         for (JsonNode item : Request.contents) {
             bookMarkService.saveContent(user, item);
         }
@@ -44,8 +46,9 @@ public class BookmarkController {
     }
 
     @GetMapping()
-    public Response<?> getContent() {
-        UserEntity user = authService.getUserContext();
+    public Response<?> getContent(
+            @AuthenticationPrincipal UserEntity user
+    ) {
         UserBookMarkDTO bookMarkList = bookMarkService.lookUpContent(user);
 
         return Response.builder()
@@ -61,7 +64,8 @@ public class BookmarkController {
     }
 
     @DeleteMapping()
-    public Response<?> deleteContent(@RequestBody DeleteContentRequest Request) {
+    public Response<?> deleteContent(
+            @RequestBody DeleteContentRequest Request) {
         List<Integer> contents_id = Request.contents_id();
         contents_id.forEach(bookMarkService::deleteBookMark);
 
