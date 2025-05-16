@@ -32,8 +32,9 @@ public class EventEntity extends BaseEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity user;
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "email_integration_user_id", nullable = false)
+    private EmailIntegrationEntity emailIntegrationUser;
 
     @Column(nullable = false)
     private String eventType;
