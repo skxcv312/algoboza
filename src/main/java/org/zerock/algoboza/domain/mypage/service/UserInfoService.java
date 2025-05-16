@@ -2,6 +2,7 @@ package org.zerock.algoboza.domain.mypage.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.zerock.algoboza.domain.auth.DTO.UserDTO;
@@ -27,18 +28,20 @@ public class UserInfoService {
     private final UserRepo userRepo;
 
     // 회원정보 수정
-    public UserDTO editUserInfo(UserInfo.editMyPageRequest newUserInfo) {
-        UserEntity oldUser = authService.getUserContext();
+    public UserDTO editUserInfo(
+            UserEntity userEntity,
+            UserInfo.editMyPageRequest newUserInfo
+    ) {
         //연동된 이메일 수정
         ConnectEmail.emailList emailList = ConnectEmail.emailList.builder()
                 .new_email(newUserInfo.email())
-                .old_email(oldUser.getEmail())
+                .old_email(userEntity.getEmail())
                 .build();
 
-        connectEmailService.editConnectionEmail(oldUser.getEmail(), List.of(emailList));
+        connectEmailService.editConnectionEmail(userEntity.getEmail(), List.of(emailList));
 
         // 정보 수정
-        UserEntity user = userRepo.findById(oldUser.getId())
+        UserEntity user = userRepo.findById(userEntity.getId())
                 .orElseThrow(() -> new IllegalArgumentException("User ID not found"));
         user.setName(newUserInfo.name());
         user.setEmail(newUserInfo.email());
@@ -65,6 +68,7 @@ public class UserInfoService {
         List<EmailIntegrationEntity> emailIntegrationEntityList = emailIntegrationRepo.findByUser(userEntity);
 
         List<GetMyInfoResponse.ConnectionEmail> ConnectionEmailList = emailIntegrationEntityList.stream()
+                .filter(emailIntegrationEntity -> !userEntity.getEmail().equals(emailIntegrationEntity.getEmail()))
                 .map(emailIntegrationEntity -> GetMyInfoResponse.ConnectionEmail.builder()
                         .platform(emailIntegrationEntity.getPlatform())
                         .email(emailIntegrationEntity.getEmail())

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.zerock.algoboza.domain.auth.DTO.UserDTO;
 import org.zerock.algoboza.domain.auth.service.AuthService;
@@ -27,8 +28,9 @@ public class UserInfo {
 
     // 회원 정보
     @GetMapping
-    public Response<?> getMyInfo() {
-        UserEntity user = authService.getUserContext();
+    public Response<?> getMyInfo(
+            @AuthenticationPrincipal UserEntity user
+    ) {
         GetMyInfoResponse response = userInfoService.getMyInfo(user);
         return Response.builder()
                 .status(HttpStatus.OK)
@@ -46,8 +48,10 @@ public class UserInfo {
     }
 
     @PatchMapping("/change")
-    public Response<?> editMyInfo(@RequestBody editMyPageRequest request) {
-        UserDTO newUserDTO = userInfoService.editUserInfo(request);
+    public Response<?> editMyInfo(
+            @AuthenticationPrincipal UserEntity user,
+            @RequestBody editMyPageRequest request) {
+        UserDTO newUserDTO = userInfoService.editUserInfo(user, request);
         JwtTokenDTO newToken = jwtTokenProvider.createToken(newUserDTO);
         HttpHeaders headers = jwtTokenProvider.setTokenToHeader(newToken);
 
@@ -66,8 +70,9 @@ public class UserInfo {
     }
 
     @PatchMapping("/change/password")
-    public Response<?> editPassword(@RequestBody changePassword request) {
-        UserEntity oldUser = authService.getUserContext();
+    public Response<?> editPassword(
+            @AuthenticationPrincipal UserEntity oldUser,
+            @RequestBody changePassword request) {
         userInfoService.changePassword(oldUser, request.old_password, request.new_password);
 
         return Response.builder()

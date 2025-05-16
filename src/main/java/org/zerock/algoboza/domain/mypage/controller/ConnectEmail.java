@@ -5,8 +5,10 @@ import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.zerock.algoboza.domain.auth.service.AuthService;
+import org.zerock.algoboza.entity.UserEntity;
 import org.zerock.algoboza.global.Response;
 import org.zerock.algoboza.provider.jwtToken.JwtTokenProvider;
 import org.zerock.algoboza.domain.mypage.service.ConnectEmailService;
@@ -19,7 +21,6 @@ import java.util.List;
 public class ConnectEmail {
     private final JwtTokenProvider jwtTokenProvider;
     private final ConnectEmailService connectEmailService;
-    private final AuthService authService;
 
 
     public record editEmailRequest(
@@ -36,9 +37,12 @@ public class ConnectEmail {
 
 
     @PatchMapping("")
-    public ResponseEntity<?> editEmail(@RequestBody editEmailRequest request) {
+    public ResponseEntity<?> editEmail(
+            @AuthenticationPrincipal UserEntity user,
+            @RequestBody editEmailRequest request
+    ) {
 
-        String userEmail = authService.getUserContext().getEmail();
+        String userEmail = user.getEmail();
 
         connectEmailService.editConnectionEmail(userEmail, request.edit_email());
 
@@ -56,9 +60,12 @@ public class ConnectEmail {
     }
 
     @PostMapping("")
-    public Response<?> addEmail(@RequestBody AddEmailRequest request) {
+    public Response<?> addEmail(
+            @RequestBody AddEmailRequest request,
+            @AuthenticationPrincipal UserEntity user
+    ) {
 
-        String userEmail = authService.getUserContext().getEmail();
+        String userEmail = user.getEmail();
         connectEmailService.addEmails(userEmail, request.email());
 
         return Response.builder()
@@ -70,8 +77,10 @@ public class ConnectEmail {
 
 
     @GetMapping("")
-    public Response<?> getEmail(@RequestHeader("Authorization") String accessToken) {
-        String userEmail = authService.getUserContext().getEmail();
+    public Response<?> getEmail(
+            @AuthenticationPrincipal UserEntity user
+    ) {
+        String userEmail = user.getEmail();
 
         return Response.builder()
                 .status(HttpStatus.OK)

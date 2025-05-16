@@ -25,9 +25,13 @@ public class AuthService {
         return email == null || !email.contains("@");
     }
 
+    public UserEntity findUserByEmail(String email) {
+        return userRepo.findByEmail(email);
+    }
+
 
     public UserDTO matchesPassword(String email, String password) {
-        UserEntity userEntity = userRepo.findByEmail(email);
+        UserEntity userEntity = findUserByEmail(email);
         if (passwordEncoder.matches(password, userEntity.getPassword())) {
             return userEntity.toDTO();
         }
@@ -52,9 +56,5 @@ public class AuthService {
     // 유저 삭제
     public void deleteUser(UserDTO userDTO) {
         userRepo.deleteById(userDTO.getId());
-    }
-
-    public UserEntity getUserContext() {
-        return (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

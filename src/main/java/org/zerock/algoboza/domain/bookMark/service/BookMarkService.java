@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.zerock.algoboza.domain.auth.service.AuthService;
 import org.zerock.algoboza.domain.bookMark.DTO.UserBookMarkDTO;
@@ -44,11 +45,8 @@ public class BookMarkService {
     }
 
     // 북마크 삭제
-    public void deleteContent() {
-        UserEntity user = authService.getUserContext();
+    public void deleteContent(@AuthenticationPrincipal UserEntity user) {
         List<BookMarkEntity> bookMarkEntityList = bookMarkRepo.findByUser(user);
-
-
     }
 
     // 북마크 조회
