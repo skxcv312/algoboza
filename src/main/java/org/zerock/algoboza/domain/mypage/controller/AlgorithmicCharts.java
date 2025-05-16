@@ -23,7 +23,7 @@ public class AlgorithmicCharts {
 
         return Response.builder()
                 .status(HttpStatus.OK)
-                .data(chartService.getKeywordScoreList(user.getId()))
+                .data(chartService.getKeywordScoreList(user))
                 .build();
     }
 }
