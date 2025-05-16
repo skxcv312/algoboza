@@ -33,11 +33,8 @@ public class RecommendContentController {
         // 쇼핑 관심 키워드 추출
         List<KeywordTypeScoreDTO> KeywordTypeScoreDTO = recommendService.getKeywordTypeScore(user);
 
-        // 키워드 그룹화
-        List<TypeKeywordDTO> TypeKeywordDTO = recommendService.groupKeywordsByType(KeywordTypeScoreDTO);
-
         // 컨텐츠 조회
-        UserResponse response = recommendService.recommendContent(user, TypeKeywordDTO);
+        UserResponse response = recommendService.recommendContent(user);
         return Response.builder()
                 .status(HttpStatus.OK)
                 .data(response)
