@@ -83,9 +83,9 @@ public class CollectionController {
     }
 
     @PostMapping("/naver_place")
-    public Response<?> cartLog(@RequestBody PlaceDTO placeDTO) {
-//        EmailIntegrationEntity user = baseLogService.findUserByLog(placeDTO);
-//        placeLogService.saveTypeLog(user, placeDTO);
+    public Response<?> placeLog(@RequestBody PlaceDTO placeDTO) {
+        EmailIntegrationEntity user = baseLogService.findUserByLog(placeDTO);
+        placeLogService.saveTypeLog(user, placeDTO);
         return Response.builder()
                 .status(HttpStatus.OK)
                 .data(placeDTO)
