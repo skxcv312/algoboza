@@ -37,11 +37,11 @@ public class ServiceLogAOP {
 //        }
 //    }
 
-    @AfterReturning(value = "serviceCut()", returning = "serviceReturnObj")
-    public void afterLog(JoinPoint joinPoint, Object serviceReturnObj) {
-        // 실행 메소드 가져오기
-        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-        log.info("Method = {}", methodSignature.getMethod().getName());
-        log.info("return value = {}", jsonUtils.toJson(serviceReturnObj));
-    }
+//    @AfterReturning(value = "serviceCut()", returning = "serviceReturnObj")
+//    public void afterLog(JoinPoint joinPoint, Object serviceReturnObj) {
+//        // 실행 메소드 가져오기
+//        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+//        log.info("Method = {}", methodSignature.getMethod().getName());
+//        log.info("return value = {}", jsonUtils.toJson(serviceReturnObj));
+//    }
 }
