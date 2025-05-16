@@ -1,4 +1,4 @@
-package org.zerock.algoboza.domain.recommend.interestTracking.Service.Ecommerce.core;
+package org.zerock.algoboza.domain.recommend.interestTracking.Service.core;
 
 import lombok.Getter;
 

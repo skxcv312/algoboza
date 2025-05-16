@@ -1,4 +1,4 @@
-package org.zerock.algoboza.domain.recommend.interestTracking.Service.Ecommerce.core;
+package org.zerock.algoboza.domain.recommend.interestTracking.Service.core;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -21,11 +21,14 @@ public abstract class WeightingInterest {
     @Autowired
     private ViewRepo viewRepo;
 
-
-    // 이벤트 타입별, 시단대별, 원하는 엔티티를 분류하기 위한 추상 메서드
+    /**
+     * 이벤트 타입별, 시단대별, 원하는 엔티티를 분류하기 위한 추상 메서드
+     */
     protected abstract List<EventEntity> getEventsByRepository(Long id);
 
-    // 키워드를 추출과 점수 설정하기 위한 추상 메서드
+    /**
+     * 키워드를 추출과 점수 설정하기 위한 추상 메서드
+     */
     protected abstract List<KeywordScoreDTO> keywordCalculation(EventEntity event);
 
     protected List<KeywordScoreDTO> Scorecard(List<KeywordScoreDTO> keywordScoreDTOList, int maximumSizeInterest) {
@@ -35,10 +38,9 @@ public abstract class WeightingInterest {
                 .toList();
     }
 
-    /*
-     * 타입별 관심키워드 호출함
-     * 사용자 관심도 점수를 계산하여 반환하는 메서드
-     * */
+    /**
+     * 타입별 관심키워드 호출함 사용자 관심도 점수를 계산하여 반환하는 메서드
+     */
     public List<KeywordScoreDTO> getInterest(Long id, int maximumSizeInterest) {
         // 이벤트 타입별 엔티티 분류
         List<EventEntity> eventEntityList = getEventsByRepository(id);
@@ -52,7 +54,13 @@ public abstract class WeightingInterest {
         return keywordScoreDTOList;
     }
 
-    // 키워드와 가중치를 이용하여 RowKeywordScore 리스트를 생성하는 메서드
+    /**
+     * 키워드와 가중치를 이용하여 RowKeywordScore 리스트를 생성하는 메서드
+     *
+     * @param keywordList
+     * @param weightingViewTime
+     * @return
+     */
     protected List<KeywordScoreDTO> createKeywordScore(List<KeywordScoreDTO> keywordList, double weightingViewTime) {
         return keywordList.stream()
                 .map(keywordScore -> {
@@ -63,7 +71,12 @@ public abstract class WeightingInterest {
                 .toList();
     }
 
-    // 이벤트 엔티티 리스트를 기반으로 RowKeywordScore 리스트를 설정하는 메서드
+    /**
+     * // 이벤트 엔티티 리스트를 기반으로 RowKeywordScore 리스트를 설정하는 메서드
+     *
+     * @param eventEntitieList
+     * @return
+     */
     protected List<KeywordScoreDTO> setKeywordScore(List<EventEntity> eventEntitieList) {
         List<KeywordScoreDTO> keywordScoreList = new ArrayList<>();
         for (EventEntity event : eventEntitieList) {
@@ -82,21 +95,32 @@ public abstract class WeightingInterest {
         return keywordScoreList;
     }
 
-
-    // 사용자 유효성 검사 메서드
+    /**
+     * 사용자 유효성 검사 메서드
+     *
+     * @param userEntity
+     */
     private void validateUser(UserEntity userEntity) {
         if (userEntity == null) {
             throw new IllegalArgumentException("UserEntity must not be null");
         }
     }
 
-    // 이벤트 ID를 기반으로 ViewEntity를 조회하는 메서드
+    /**
+     * 이벤트 ID를 기반으로 ViewEntity를 조회하는 메서드
+     *
+     * @param eventId
+     * @return
+     */
+
     public ViewEntity viewFindByEventId(long eventId) {
         return viewRepo.findByEventId(eventId)
                 .orElseThrow(() -> new IllegalArgumentException("View not found for event ID: " + eventId));
     }
 
-    // 이벤트를 기반으로 뷰 시간 가중치를 계산하는 메서드
+    /**
+     * 이벤트를 기반으로 뷰 시간 가중치를 계산하는 메서드
+     */
     public double calculateWeightingViewTime(EventEntity eventEntity) {
         // ViewEntity 조회
         ViewEntity viewEntity = viewFindByEventId(eventEntity.getId());
@@ -113,17 +137,30 @@ public abstract class WeightingInterest {
         return dwellTimeScore + totalScrollScore;
     }
 
-    // 활동 유무를 판단하는 메서드
+    /**
+     * 활동 유무를 판단하는 메서드
+     */
     private boolean isInactive(double dwellTimeScore, double totalScrollScore) {
         return dwellTimeScore == 0 || totalScrollScore == 0;
     }
 
-    // 체류 시간 가중치를 계산하는 메서드
+    /**
+     * 체류 시간 가중치를 계산하는 메서드
+     *
+     * @param viewEntity
+     * @return
+     */
     private double calculateDwellTimeScore(ViewEntity viewEntity) {
         return viewEntity.getDwellTime() * LogActionWeight.DWELL_TIME.getWeights();
     }
 
-    // 스크롤 가중치를 계산하는 메서드
+
+    /**
+     * 스크롤 가중치를 계산하는 메서드
+     *
+     * @param viewEntity
+     * @return
+     */
     private double calculateTotalScrollScore(ViewEntity viewEntity) {
         return viewEntity.getTotalScroll() * LogActionWeight.TOTAL_SCROLL.getWeights();
     }
