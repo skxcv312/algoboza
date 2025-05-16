@@ -1,5 +1,7 @@
 package org.zerock.algoboza.domain.logCollection.DTO;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,5 +14,7 @@ import org.zerock.algoboza.domain.logCollection.DTO.base.BaseLogDTO;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CategoryDTO extends BaseLogDTO {
+    @NotNull
+    @NotEmpty
     private List<String> category;
 }
