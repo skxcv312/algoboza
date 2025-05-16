@@ -6,14 +6,18 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.juli.logging.Log;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.zerock.algoboza.domain.auth.service.AuthService;
 import org.zerock.algoboza.domain.logCollection.DTO.base.BaseLogDTO;
 import org.zerock.algoboza.domain.logCollection.DTO.base.ClickTrackingDTO;
 import org.zerock.algoboza.domain.logCollection.DTO.base.ViewDTO;
+import org.zerock.algoboza.entity.EmailIntegrationEntity;
 import org.zerock.algoboza.entity.UserEntity;
 import org.zerock.algoboza.entity.logs.DetailsEntity;
 import org.zerock.algoboza.entity.logs.EventEntity;
 import org.zerock.algoboza.entity.logs.ClickTrackingEntity;
 import org.zerock.algoboza.entity.logs.ViewEntity;
+import org.zerock.algoboza.entity.redis.KeywordScoreRedisEntity;
+import org.zerock.algoboza.repository.EmailIntegrationRepo;
 import org.zerock.algoboza.repository.logs.EventRepo;
 import org.zerock.algoboza.repository.logs.ClickTrackingRepo;
 import org.zerock.algoboza.repository.logs.DetailsRepo;
@@ -27,6 +31,7 @@ public class BaseLogService {
     private final ClickTrackingRepo clickTrackingRepo;
     private final ViewRepo viewRepo;
     private final DetailsRepo detailsRepo;
+    private final EmailIntegrationRepo emailIntegrationRepo;
 
     // 클릭 저장
     protected void saveClick(EventEntity eventEntity, ClickTrackingDTO clickTrackingDTO) {
@@ -62,9 +67,10 @@ public class BaseLogService {
     }
 
     // 이벤트 엔티티 저장
-    EventEntity saveEvent(UserEntity userEntity, BaseLogDTO baseLogDTO) {
+    EventEntity saveEvent(EmailIntegrationEntity emailIntegrationEntity, BaseLogDTO baseLogDTO) {
+        log.info("Save event" + baseLogDTO.getType());
         EventEntity eventEntity = EventEntity.builder()
-                .user(userEntity)
+                .emailIntegrationUser(emailIntegrationEntity)
                 .pageUrl(baseLogDTO.getUrl())
                 .timestamp(baseLogDTO.getTimestamp())
                 .eventType(baseLogDTO.getType())
@@ -89,7 +95,16 @@ public class BaseLogService {
         baseLogDTO.getClickTracking().forEach(clickTracking -> {
             saveClick(eventEntity, clickTracking);
         });
+
+        // redis event count
+        redisCount(emailIntegrationEntity.getUser().getId());
         return eventEntity;
+    }
+
+    public EmailIntegrationEntity findUserByLog(BaseLogDTO baseLogDTO) {
+        String UserEmail = baseLogDTO.getUserEmail();
+        EmailIntegrationEntity a = emailIntegrationRepo.findByEmail(UserEmail);
+        return a;
     }
 
 

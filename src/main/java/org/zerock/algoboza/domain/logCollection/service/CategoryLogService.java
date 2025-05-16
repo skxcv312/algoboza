@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.zerock.algoboza.domain.logCollection.DTO.CategoryDTO;
 import org.zerock.algoboza.domain.logCollection.service.impl.LogProcessor;
+import org.zerock.algoboza.entity.EmailIntegrationEntity;
 import org.zerock.algoboza.entity.UserEntity;
 import org.zerock.algoboza.entity.logs.EventEntity;
 import org.zerock.algoboza.entity.logs.category.CategoryEntity;
@@ -19,7 +20,7 @@ public class CategoryLogService implements LogProcessor<CategoryDTO> {
     private final CategoryRepo categoryRepo;
 
     @Override
-    public void saveTypeLog(UserEntity user, CategoryDTO log) {
+    public void saveTypeLog(EmailIntegrationEntity user, CategoryDTO log) {
         EventEntity eventEntity = baseLogService.saveBaseLog(user, log); // 기본 저장
 
         List<String> categoryList = log.getCategory();

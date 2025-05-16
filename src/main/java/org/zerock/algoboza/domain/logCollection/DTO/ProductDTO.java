@@ -1,5 +1,7 @@
 package org.zerock.algoboza.domain.logCollection.DTO;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,5 +18,7 @@ public class ProductDTO extends BaseLogDTO {
     private String productName;
     private int price;
     private boolean like;
+    @NotNull
+    @NotEmpty
     private List<String> category;
 }

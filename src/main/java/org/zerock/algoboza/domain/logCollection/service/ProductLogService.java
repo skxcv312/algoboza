@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.zerock.algoboza.domain.logCollection.DTO.ProductDTO;
 import org.zerock.algoboza.domain.logCollection.DTO.base.BaseLogDTO;
 import org.zerock.algoboza.domain.logCollection.service.impl.LogProcessor;
+import org.zerock.algoboza.entity.EmailIntegrationEntity;
 import org.zerock.algoboza.entity.UserEntity;
 import org.zerock.algoboza.entity.logs.EventEntity;
 import org.zerock.algoboza.entity.logs.category.CategoryEntity;
@@ -20,13 +21,14 @@ public class ProductLogService implements LogProcessor<ProductDTO> {
     private final CategoryRepo categoryRepo;
 
     @Override
-    public void saveTypeLog(UserEntity user, ProductDTO log) {
+    public void saveTypeLog(EmailIntegrationEntity user, ProductDTO log) {
         EventEntity eventEntity = baseLogService.saveBaseLog(user, log); // 기본 저장
 
         ProductEntity productEntity = ProductEntity.builder()
                 .productUrl(log.getUrl())
                 .price(log.getPrice())
                 .name(log.getProductName())
+                .like(log.isLike())
                 .event(eventEntity)
                 .build();
         productRepo.save(productEntity);

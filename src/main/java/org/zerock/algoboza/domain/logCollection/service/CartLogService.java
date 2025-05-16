@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.zerock.algoboza.domain.logCollection.DTO.CartDTO;
 import org.zerock.algoboza.domain.logCollection.DTO.CartDTO.CartItemDTO;
 import org.zerock.algoboza.domain.logCollection.service.impl.LogProcessor;
+import org.zerock.algoboza.entity.EmailIntegrationEntity;
 import org.zerock.algoboza.entity.UserEntity;
 import org.zerock.algoboza.entity.logs.EventEntity;
 import org.zerock.algoboza.entity.logs.cart.CartItemCategoryEntity;
@@ -44,7 +45,7 @@ public class CartLogService implements LogProcessor<CartDTO> {
     }
 
     @Override
-    public void saveTypeLog(UserEntity user, CartDTO log) {
+    public void saveTypeLog(EmailIntegrationEntity user, CartDTO log) {
         EventEntity eventEntity = baseLogService.saveBaseLog(user, log); // 기본 저장
 
         List<CartItemDTO> cartItemDTOList = log.getCart();

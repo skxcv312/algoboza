@@ -1,6 +1,7 @@
 package org.zerock.algoboza.domain.logCollection.DTO.base;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +17,8 @@ public class BaseLogDTO {
     private LocalDateTime timestamp;
     private String url;
     private String type;
-    private List<String> details;
+    private List<String> details = new ArrayList<>();
     private ViewDTO view;
-    private List<ClickTrackingDTO> clickTracking;
+    private List<ClickTrackingDTO> clickTracking = new ArrayList<>();
+    ;
 }
