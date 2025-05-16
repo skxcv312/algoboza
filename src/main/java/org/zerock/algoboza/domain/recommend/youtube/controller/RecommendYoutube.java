@@ -1,18 +1,19 @@
-package org.zerock.algoboza.domain.youtube.controller;
+package org.zerock.algoboza.domain.recommend.youtube.controller;
 
 
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.zerock.algoboza.domain.auth.DTO.UserDTO;
 import org.zerock.algoboza.domain.auth.service.AuthService;
-import org.zerock.algoboza.domain.youtube.DTO.InterestScoresDTO;
-import org.zerock.algoboza.domain.youtube.DTO.VideoInfoDTO;
-import org.zerock.algoboza.domain.youtube.DTO.VideoSummaryDTO;
-import org.zerock.algoboza.domain.youtube.DTO.VideoSummaryDTO.Meta;
-import org.zerock.algoboza.domain.youtube.service.RecommendYoutubeService;
+import org.zerock.algoboza.domain.recommend.youtube.DTO.InterestScoresDTO;
+import org.zerock.algoboza.domain.recommend.youtube.DTO.VideoInfoDTO;
+import org.zerock.algoboza.domain.recommend.youtube.DTO.VideoSummaryDTO;
+import org.zerock.algoboza.domain.recommend.youtube.service.RecommendYoutubeService;
+import org.zerock.algoboza.entity.UserEntity;
 import org.zerock.algoboza.global.JsonUtils;
 import org.zerock.algoboza.global.Response;
 

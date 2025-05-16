@@ -1,4 +1,4 @@
-package org.zerock.algoboza.domain.youtube.DTO;
+package org.zerock.algoboza.domain.recommend.youtube.DTO;
 
 public record VideoSummaryDTO(
         Meta meta,
