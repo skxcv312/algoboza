@@ -24,18 +24,20 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class RecommendYoutubeService {
     private final WebClientConfig webClientConfig;
+    private final InterestKeywordService interestKeywordService;
     private final JsonUtils jsonUtils;
+
+    private final int MAX_SEARCH_KEYWORD = 3;
+    private final int MAX_RESULTS = 15;
 
 
     // 유저 정보를 토대로 점수 주기
-    public InterestScoresDTO getInterestScores(UserDTO user) {
-
-        // 일단 예시로
+    public InterestScoresDTO getInterestScores(UserEntity userEntity) {
+        List<KeywordScoreDTO> keywordScoreDTOList = interestKeywordService.getInterestScore(userEntity);
         Map<String, Integer> interestScores = new HashMap<>();
-        interestScores.put("ai", 87);
-        interestScores.put("mcp", 70);
-        interestScores.put("창업", 56);
-        interestScores.put("프로그래머", 78);
+        keywordScoreDTOList.forEach(keywordScoreDTO -> {
+            interestScores.put(keywordScoreDTO.keyword(), (int) keywordScoreDTO.score());
+        });
 
         return new InterestScoresDTO(interestScores);
     }
@@ -60,8 +62,8 @@ public class RecommendYoutubeService {
     public Mono<VideoInfoDTO> getYoutubeVideos(InterestScoresDTO interestScoresDTO) {
         WebClient webClient = webClientConfig.YoutubeBuilder();
         String path = "/api/recommend/youtube";
-        int max_search_keyword = 1;
-        int max_results = 10;
+        int max_search_keyword = MAX_SEARCH_KEYWORD;
+        int max_results = MAX_RESULTS;
 
         // 정상 응답 처리
         return webClient.post()

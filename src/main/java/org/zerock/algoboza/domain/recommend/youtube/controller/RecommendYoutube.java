@@ -25,15 +25,15 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/api/recommend/youtube")
 public class RecommendYoutube {
     private final RecommendYoutubeService recommendYoutubeService;
-    private final AuthService authService;
-    private final JsonUtils jsonUtils;
 
     @GetMapping()
-    public Response<?> recommendYoutube() {
-        UserDTO user = authService.getUserContext().toDTO();
+    public Response<?> recommendYoutube(
+            @AuthenticationPrincipal UserEntity userEntity
+    ) {
+        ;
 
         // 유저 관심도 얻기
-        InterestScoresDTO interestScores = recommendYoutubeService.getInterestScores(user);
+        InterestScoresDTO interestScores = recommendYoutubeService.getInterestScores(userEntity);
 
         // 유튜브 요약 요청 받기
         Mono<VideoInfoDTO> response = recommendYoutubeService.getYoutubeVideos(interestScores);
