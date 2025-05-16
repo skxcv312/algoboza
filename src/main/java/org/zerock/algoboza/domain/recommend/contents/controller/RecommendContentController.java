@@ -12,7 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.zerock.algoboza.domain.recommend.contents.DTO.KeywordTypeScoreDTO;
 import org.zerock.algoboza.domain.recommend.contents.DTO.TypeKeywordDTO;
 import org.zerock.algoboza.domain.recommend.contents.DTO.UserResponse;
-import org.zerock.algoboza.domain.recommend.contents.service.RecommendShoppingService;
+import org.zerock.algoboza.domain.recommend.contents.service.RecommendService;
 import org.zerock.algoboza.entity.UserEntity;
 import org.zerock.algoboza.global.JsonUtils;
 import org.zerock.algoboza.global.Response;
@@ -22,7 +22,7 @@ import org.zerock.algoboza.global.Response;
 @RequiredArgsConstructor
 @RequestMapping("/api/recommend")
 public class RecommendContentController {
-    private final RecommendShoppingService recommendShoppingService;
+    private final RecommendService recommendService;
     private final WebClient webClient = WebClient.create();
     private final JsonUtils jsonUtils;
 
@@ -31,13 +31,13 @@ public class RecommendContentController {
             @AuthenticationPrincipal UserEntity user
     ) {
         // 쇼핑 관심 키워드 추출
-        List<KeywordTypeScoreDTO> KeywordTypeScoreDTO = recommendShoppingService.getKeywordTypeScore(user);
+        List<KeywordTypeScoreDTO> KeywordTypeScoreDTO = recommendService.getKeywordTypeScore(user);
 
         // 키워드 그룹화
-        List<TypeKeywordDTO> TypeKeywordDTO = recommendShoppingService.groupKeywordsByType(KeywordTypeScoreDTO);
+        List<TypeKeywordDTO> TypeKeywordDTO = recommendService.groupKeywordsByType(KeywordTypeScoreDTO);
 
         // 컨텐츠 조회
-        UserResponse response = recommendShoppingService.recommendContent(user, TypeKeywordDTO);
+        UserResponse response = recommendService.recommendContent(user, TypeKeywordDTO);
         return Response.builder()
                 .status(HttpStatus.OK)
                 .data(response)

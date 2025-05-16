@@ -24,7 +24,7 @@ import org.zerock.algoboza.repository.redis.RedisRepo;
 @Log4j2
 @Service
 @RequiredArgsConstructor
-public class RecommendShoppingService {
+public class RecommendService {
 
     private final InterestKeywordService interestKeywordService;
     private final RedisRepo redisRepo;
