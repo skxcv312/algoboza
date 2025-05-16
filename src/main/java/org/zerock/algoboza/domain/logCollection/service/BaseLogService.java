@@ -1,17 +1,13 @@
 package org.zerock.algoboza.domain.logCollection.service;
 
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.apache.juli.logging.Log;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.zerock.algoboza.domain.auth.service.AuthService;
 import org.zerock.algoboza.domain.logCollection.DTO.base.BaseLogDTO;
 import org.zerock.algoboza.domain.logCollection.DTO.base.ClickTrackingDTO;
 import org.zerock.algoboza.domain.logCollection.DTO.base.ViewDTO;
 import org.zerock.algoboza.entity.EmailIntegrationEntity;
-import org.zerock.algoboza.entity.UserEntity;
 import org.zerock.algoboza.entity.logs.DetailsEntity;
 import org.zerock.algoboza.entity.logs.EventEntity;
 import org.zerock.algoboza.entity.logs.ClickTrackingEntity;
@@ -22,7 +18,7 @@ import org.zerock.algoboza.repository.logs.EventRepo;
 import org.zerock.algoboza.repository.logs.ClickTrackingRepo;
 import org.zerock.algoboza.repository.logs.DetailsRepo;
 import org.zerock.algoboza.repository.logs.ViewRepo;
-import org.zerock.algoboza.repository.redis.RedisRepo;
+import org.zerock.algoboza.repository.redis.KeywordScoreRedisRepo;
 
 @Log4j2
 @Service
@@ -34,7 +30,7 @@ public class BaseLogService {
     private final ViewRepo viewRepo;
     private final DetailsRepo detailsRepo;
     private final EmailIntegrationRepo emailIntegrationRepo;
-    private final RedisRepo redisRepo;
+    private final KeywordScoreRedisRepo keywordScoreRedisRepo;
 
 
     // 클릭 저장
@@ -84,12 +80,12 @@ public class BaseLogService {
     }
 
     public void redisCount(Long id) {
-        KeywordScoreRedisEntity entity = redisRepo.findById(id).orElse(null);
+        KeywordScoreRedisEntity entity = keywordScoreRedisRepo.findById(id).orElse(null);
         if (entity == null) {
             return;
         }
         entity.setEventUpdateNum(entity.getEventUpdateNum() + 1);
-        redisRepo.save(entity);
+        keywordScoreRedisRepo.save(entity);
     }
 
     // 베이스 로그 저장 분기점

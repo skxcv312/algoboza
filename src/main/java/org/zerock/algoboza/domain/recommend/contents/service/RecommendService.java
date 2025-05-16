@@ -23,6 +23,8 @@ import org.zerock.algoboza.domain.recommend.interestTracking.InterestKeywordServ
 import org.zerock.algoboza.entity.UserEntity;
 import org.zerock.algoboza.entity.redis.KeywordScoreRedisEntity;
 import org.zerock.algoboza.repository.redis.RedisRepo;
+import org.zerock.algoboza.repository.redis.KeywordScoreRedisRepo;
+import org.zerock.algoboza.repository.redis.RecommendResponseRedisRepo;
 
 @Log4j2
 @Service
@@ -30,7 +32,8 @@ import org.zerock.algoboza.repository.redis.RedisRepo;
 public class RecommendService {
 
     private final InterestKeywordService interestKeywordService;
-    private final RedisRepo redisRepo;
+    private final KeywordScoreRedisRepo keywordScoreRedisRepo;
+    private final RecommendResponseRedisRepo recommendResponseRedisRepo;
     private final WebClient webClient;
 
     @Value("${server-url}")
@@ -48,7 +51,7 @@ public class RecommendService {
                 .scoreList(keywordScoreDTOList)
                 .eventUpdateNum(0)
                 .build();
-        redisRepo.save(redisEntity);
+        keywordScoreRedisRepo.save(redisEntity);
     }
 
     /**
