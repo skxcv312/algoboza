@@ -1,5 +1,6 @@
 package org.zerock.algoboza.entity.logs;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,6 +13,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @SuperBuilder
@@ -25,11 +28,14 @@ public class ClickTrackingEntity {
     private Long id;
 
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "event_id", nullable = false)
     private EventEntity event;
 
     private String action;
     private LocalDateTime clickTime;
     private String clickType;
+
+    @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String clickUrl;
 }

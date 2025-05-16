@@ -13,6 +13,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.zerock.algoboza.entity.base.BaseEntity;
 
 @Entity
@@ -28,6 +30,7 @@ public class ViewEntity extends BaseEntity {
 
     @OneToOne
     @MapsId
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "event_id")
     private EventEntity event;
 

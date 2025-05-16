@@ -12,6 +12,8 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.zerock.algoboza.entity.base.BaseEntity;
 
 @Entity
@@ -25,6 +27,7 @@ public class DetailsEntity extends BaseEntity {
     private Long id;
 
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "event_id")
     private EventEntity event;
 
