@@ -32,6 +32,8 @@ public class BaseLogService {
     private final ViewRepo viewRepo;
     private final DetailsRepo detailsRepo;
     private final EmailIntegrationRepo emailIntegrationRepo;
+    private final RedisRepo redisRepo;
+
 
     // 클릭 저장
     protected void saveClick(EventEntity eventEntity, ClickTrackingDTO clickTrackingDTO) {

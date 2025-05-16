@@ -34,7 +34,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         try {
             // SecurityConfig도 수정바람
             List<String> excludedPaths = List.of("/", "/login", "/signup", "/refresh-token", "/email/verify");
-            if (excludedPaths.contains(uri) || uri.startsWith("/api/collection/log/")) {
+            if (excludedPaths.contains(uri) || uri.startsWith("/api/log/collection/")) {
                 filterChain.doFilter(request, response);
                 return;
             }

@@ -28,7 +28,7 @@ public class SecurityConfig {
                 .sessionManagement(
                         session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 사용 안함 (JWT 사용)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/collection/log/**").permitAll()
+                        .requestMatchers("/api/log/collection/**").permitAll()
                         .requestMatchers("/login").permitAll() // 로그인/회원가입은 인증 없이 허용
                         .requestMatchers("/signup").permitAll()
                         .requestMatchers("/refresh-token").permitAll()
