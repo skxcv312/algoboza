@@ -22,10 +22,12 @@ import org.zerock.algoboza.repository.logs.EventRepo;
 import org.zerock.algoboza.repository.logs.ClickTrackingRepo;
 import org.zerock.algoboza.repository.logs.DetailsRepo;
 import org.zerock.algoboza.repository.logs.ViewRepo;
+import org.zerock.algoboza.repository.redis.RedisRepo;
 
 @Log4j2
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class BaseLogService {
     private final EventRepo eventRepo;
     private final ClickTrackingRepo clickTrackingRepo;
@@ -81,9 +83,18 @@ public class BaseLogService {
         return eventRepo.save(eventEntity);
     }
 
-    @Transactional
-    public EventEntity saveBaseLog(UserEntity userEntity, BaseLogDTO baseLogDTO) {
-        EventEntity eventEntity = saveEvent(userEntity, baseLogDTO);
+    public void redisCount(Long id) {
+        KeywordScoreRedisEntity entity = redisRepo.findById(id).orElse(null);
+        if (entity == null) {
+            return;
+        }
+        entity.setEventUpdateNum(entity.getEventUpdateNum() + 1);
+        redisRepo.save(entity);
+    }
+
+    // 베이스 로그 저장 분기점
+    public EventEntity saveBaseLog(EmailIntegrationEntity emailIntegrationEntity, BaseLogDTO baseLogDTO) {
+        EventEntity eventEntity = saveEvent(emailIntegrationEntity, baseLogDTO);
 
         // 디테일 로그 저장
         baseLogDTO.getDetails().forEach(detail -> {
