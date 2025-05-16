@@ -1,8 +1,11 @@
 package org.zerock.algoboza.domain.recommend.contents.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
@@ -97,11 +100,13 @@ public class RecommendService {
             return convertRedisDataToDTO(scores);
         }
 
-        List<KeywordScoreDTO> shoppingScores = interestKeywordService.getInterestScore(user);
-        List<KeywordTypeScoreDTO> keywordScoreDTOs = mapToTypeKeyword(shoppingScores, SHOPPING);
+        ///////
+        List<KeywordTypeScoreDTO> interestScores = interestKeywordService.getInterestScore(user);
 
-        saveKeywordScoresToRedis(user.getId(), keywordScoreDTOs);
-        return keywordScoreDTOs;
+        ///////
+
+        saveKeywordScoresToRedis(user.getId(), interestScores);
+        return interestScores;
     }
 
     /**
@@ -136,23 +141,62 @@ public class RecommendService {
      */
     public UserResponse recommendContent(UserEntity user, List<TypeKeywordDTO> typeKeywordDTOList) {
         List<SearchKeywordDTO> searchKeywords = typeKeywordDTOList.stream()
-                .flatMap(typeKeywordDTO -> identifyKeywords(typeKeywordDTO.keywords()).stream()
+                .flatMap(typeKeywordDTO -> identifyKeywords(typeKeywordDTO.type(), typeKeywordDTO.keywords()).stream()
                         .map(keyword -> new SearchKeywordDTO(keyword.keyword(), typeKeywordDTO.type(),
                                 keyword.options())))
                 .toList();
 
         MetaData metaData = new MetaData("Seoul", "2001-02-25", "2025-04-10T12:00:00Z", "사용자가 작성한 노트");
         UserInterestDTO userInterest = new UserInterestDTO(Math.toIntExact(user.getId()), metaData, searchKeywords);
+        log.info("userInterest {}", userInterest);
 
-        return createWebClientRequest(SERVER_URL + "/analyze", userInterest, UserResponse.class);
+        UserResponse userResponse = createWebClientRequest(SERVER_URL + "/analyze", userInterest, UserResponse.class);
+        userResponse = filterDuplicateTitles(userResponse);
+        return userResponse;
+    }
+
+    /**
+     * 필터 중복 타이틀
+     */
+    private UserResponse filterDuplicateTitles(UserResponse userResponse) {
+        Function<String, String> cleanTitle = title -> title.replaceAll("<[^>]*>", "").trim();
+        Set<String> globalTitleSet = new HashSet<>();
+
+        // naver_results 중복 제거
+        Map<String, List<UserResponse.NaverResult>> filteredResults =
+                userResponse.naver_results().entrySet().stream()
+                        .collect(Collectors.toMap(
+                                Map.Entry::getKey,
+                                entry -> new ArrayList<>(
+                                        entry.getValue().stream()
+                                                .collect(Collectors.toMap(
+                                                        r -> cleanTitle.apply(r.title()),
+                                                        r -> r,
+                                                        (r1, r2) -> r1
+                                                ))
+                                                .values()
+                                )
+                        ));
+
+        // naver_places 중복 제거 (지역 구조 유지)
+        Map<String, List<UserResponse.NaverPlace>> filteredPlaces =
+                userResponse.naver_places().entrySet().stream()
+                        .collect(Collectors.toMap(
+                                Map.Entry::getKey,
+                                entry -> entry.getValue().stream()
+                                        .filter(place -> globalTitleSet.add(cleanTitle.apply(place.title())))
+                                        .toList()
+                        ));
+
+        return new UserResponse(userResponse.user_id(), filteredResults, filteredPlaces);
     }
 
     /**
      * 키워드를 WebClient로 분석하여 그룹화
      */
-    private List<KeywordGroupDTO> identifyKeywords(List<String> keywords) {
+    private List<KeywordGroupDTO> identifyKeywords(String type, List<String> keywords) {
         return webClient.post()
-                .uri(SERVER_URL + "/api/keyword/processing")
+                .uri(SERVER_URL + "/api/keyword/processing/" + type)
                 .body(BodyInserters.fromValue(keywords))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<KeywordGroupDTO>>() {

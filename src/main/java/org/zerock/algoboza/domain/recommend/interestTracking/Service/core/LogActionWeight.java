@@ -8,6 +8,7 @@ public enum LogActionWeight {
     PRODUCT("product", 3),
     CATEGORY("category", 2),
     CART("cart", 7),
+    PLACE("naver_place", 4),
 
 
     DWELL_TIME("dwell_time", 0.1),
@@ -15,6 +16,8 @@ public enum LogActionWeight {
     LIKE("like", 4),
     MORE_SEE("상품정보더보기", 4),
     QUANTITY("quantity", 5),
+    PLACE_ADDRESS("address", 6),
+    PLACE_CATEGORY("category", 5),
     ;
 
 

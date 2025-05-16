@@ -6,4 +6,5 @@ import org.zerock.algoboza.entity.logs.place.PlaceEntity;
 
 @Repository
 public interface PlaceRepo extends JpaRepository<PlaceEntity, Long> {
+    PlaceEntity findByEventId(Long eventId);
 }

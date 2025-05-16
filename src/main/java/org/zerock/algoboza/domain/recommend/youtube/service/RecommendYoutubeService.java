@@ -1,11 +1,12 @@
 package org.zerock.algoboza.domain.recommend.youtube.service;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.zerock.algoboza.domain.auth.DTO.UserDTO;
+import org.zerock.algoboza.domain.recommend.contents.DTO.KeywordTypeScoreDTO;
 import org.zerock.algoboza.domain.recommend.interestTracking.DTO.KeywordScoreDTO;
 import org.zerock.algoboza.domain.recommend.interestTracking.InterestKeywordService;
 import org.zerock.algoboza.domain.recommend.youtube.DTO.InterestScoresDTO;
@@ -33,7 +34,8 @@ public class RecommendYoutubeService {
 
     // 유저 정보를 토대로 점수 주기
     public InterestScoresDTO getInterestScores(UserEntity userEntity) {
-        List<KeywordScoreDTO> keywordScoreDTOList = interestKeywordService.getInterestScore(userEntity);
+        List<KeywordTypeScoreDTO> keywordScoreDTOList = interestKeywordService.getInterestScore(userEntity);
+
         Map<String, Integer> interestScores = new HashMap<>();
         keywordScoreDTOList.forEach(keywordScoreDTO -> {
             interestScores.put(keywordScoreDTO.keyword(), (int) keywordScoreDTO.score());

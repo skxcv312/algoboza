@@ -34,22 +34,20 @@ public abstract class WeightingInterest {
     protected List<KeywordScoreDTO> Scorecard(List<KeywordScoreDTO> keywordScoreDTOList, int maximumSizeInterest) {
         return keywordScoreDTOList.stream()
                 .sorted(Comparator.comparingDouble(KeywordScoreDTO::score).reversed())
-                .limit(maximumSizeInterest)
                 .toList();
     }
 
     /**
      * 타입별 관심키워드 호출함 사용자 관심도 점수를 계산하여 반환하는 메서드
      */
-    public List<KeywordScoreDTO> getInterest(Long id, int maximumSizeInterest) {
+    public List<KeywordScoreDTO> getInterest(Long id) {
         // 이벤트 타입별 엔티티 분류
         List<EventEntity> eventEntityList = getEventsByRepository(id);
 
         // 초기 키워드 점수 리스트 설정
         List<KeywordScoreDTO> keywordScoreDTOList = setKeywordScore(eventEntityList);
 
-        // 키워드 정렬 후 상위 5개만 추출
-        keywordScoreDTOList = Scorecard(keywordScoreDTOList, maximumSizeInterest);
+        log.info("keywordScoreDTOList{}", keywordScoreDTOList);
 
         return keywordScoreDTOList;
     }

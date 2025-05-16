@@ -14,4 +14,7 @@ public interface EventRepo extends JpaRepository<EventEntity, Long> {
     Optional<List<EventEntity>> findByEmailIntegrationUserId(Long aLong);
 
     void deleteByEmailIntegrationUserId(Long userId);
+
+
+    List<EventEntity> findTop20ByEventTypeAndEmailIntegrationUserIdOrderByCreatedAtDesc(String action, Long id);
 }
