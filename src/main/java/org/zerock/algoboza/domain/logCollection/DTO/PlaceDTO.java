@@ -1,5 +1,6 @@
 package org.zerock.algoboza.domain.logCollection.DTO;
 
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +15,7 @@ import org.zerock.algoboza.domain.logCollection.DTO.base.BaseLogDTO;
 @NoArgsConstructor
 public class PlaceDTO extends BaseLogDTO {
     private String searchText;
+    @NotNull
     private PlaceDetailDTO placeDtails;
 
     @Getter
