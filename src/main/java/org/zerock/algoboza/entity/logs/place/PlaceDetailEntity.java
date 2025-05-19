@@ -1,6 +1,7 @@
 package org.zerock.algoboza.entity.logs.place;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,7 +30,7 @@ public class PlaceDetailEntity extends BaseEntity {
     String address;
     String name;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "place_id")
     PlaceEntity place;
