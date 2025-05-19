@@ -39,7 +39,7 @@ public class BookMarkService {
                 .description(content.toString())
                 .build();
         if (isSameContent(bookMarkEntity)) {
-            throw new IllegalArgumentException("The same content has already been saved.");
+            return;
         }
         bookMarkRepo.save(bookMarkEntity);
     }
