@@ -14,10 +14,11 @@ public enum LogActionWeight {
     DWELL_TIME("dwell_time", 0.1),
     TOTAL_SCROLL("total_scroll", 0.01),
     LIKE("like", 4),
-    MORE_SEE("상품정보더보기", 4),
     QUANTITY("quantity", 5),
     PLACE_ADDRESS("address", 6),
     PLACE_CATEGORY("category", 5),
+    CLICK_MORE_SEE("상품정보더보기", 4),
+    CLICK_CART("장바구니", 5),
     ;
 
 

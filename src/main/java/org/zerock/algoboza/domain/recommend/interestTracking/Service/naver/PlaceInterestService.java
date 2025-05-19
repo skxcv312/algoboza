@@ -5,19 +5,24 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.HashSet;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Streams;
 import org.springframework.stereotype.Service;
+import org.zerock.algoboza.domain.recommend.contents.DTO.UserInterestDTO.SearchKeywordDTO;
 import org.zerock.algoboza.domain.recommend.interestTracking.DTO.KeywordScoreDTO;
 import org.zerock.algoboza.domain.recommend.interestTracking.Service.core.LogActionWeight;
 import org.zerock.algoboza.domain.recommend.interestTracking.Service.core.WeightingInterest;
+import org.zerock.algoboza.entity.EmailIntegrationEntity;
 import org.zerock.algoboza.entity.logs.EventEntity;
 import org.zerock.algoboza.entity.logs.place.PlaceCategoryEntity;
 import org.zerock.algoboza.entity.logs.place.PlaceDetailEntity;
 import org.zerock.algoboza.entity.logs.place.PlaceEntity;
+import org.zerock.algoboza.repository.EmailIntegrationRepo;
 import org.zerock.algoboza.repository.logs.EventRepo;
 import org.zerock.algoboza.repository.logs.PlaceRepo.PlaceCategoryRepo;
 import org.zerock.algoboza.repository.logs.PlaceRepo.PlaceDetailRepo;
@@ -32,6 +37,7 @@ public class PlaceInterestService {
     private final PlaceRepo placeRepo;
     private final PlaceDetailRepo placeDetailRepo;
     private final PlaceCategoryRepo placeCategoryRepo;
+    private final EmailIntegrationRepo emailIntegrationRepo;
 
     private final LogActionWeight PLACE = LogActionWeight.PLACE;
     private final LogActionWeight PLACE_ADDRESS = LogActionWeight.PLACE_ADDRESS;
@@ -110,6 +116,89 @@ public class PlaceInterestService {
         mergedAll.addAll(categoryResults);
 
         return mergedAll;
+    }
 
+    record PlaceCategory(
+            String searchText,
+            List<String> place,
+            List<String> category
+    ) {
+    }
+
+    public List<SearchKeywordDTO> getSearchKeywordDTO(Long userId) {
+        List<EmailIntegrationEntity> emailIntegrationEntityList = emailIntegrationRepo.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("email is null"));
+
+        // Group event IDs by searchText from their associated PlaceEntity
+        Map<String, List<Long>> searchTextToEventIds = new HashMap<>();
+        for (EmailIntegrationEntity emailIntegrationEntity : emailIntegrationEntityList) {
+            List<EventEntity> eventEntityList = getEventsByRepository(emailIntegrationEntity.getId());
+            log.info("EventEntity count: {}", eventEntityList.size());
+
+            for (EventEntity eventEntity : eventEntityList) {
+                PlaceEntity placeEntity = placeRepo.findByEventId(eventEntity.getId());
+
+                if (placeEntity == null) {
+                    log.warn("PlaceEntity not found for eventId: {}", eventEntity.getId());
+                    continue;
+                }
+
+                String searchText = placeEntity.getSearchText();
+                if (searchText == null || searchText.isBlank()) {
+                    log.warn("Empty searchText for placeEntity: {}", placeEntity.getId());
+                    continue;
+                }
+
+                searchTextToEventIds
+                        .computeIfAbsent(searchText, k -> new ArrayList<>())
+                        .add(eventEntity.getId());
+            }
+            log.info("Grouped event IDs by searchText: {}", searchTextToEventIds);
+        }
+
+        List<PlaceCategory> placeCategoryList = new ArrayList<>();
+
+        for (Map.Entry<String, List<Long>> entry : searchTextToEventIds.entrySet()) {
+            String searchText = entry.getKey();
+            List<Long> eventIds = entry.getValue();
+
+            List<String> places = new ArrayList<>();
+            List<String> categories = new ArrayList<>();
+
+            for (Long eventId : eventIds) {
+                PlaceEntity placeEntity = placeRepo.findByEventId(eventId);
+                PlaceDetailEntity placeDetail = placeDetailRepo.findByPlaceId(placeEntity.getId());
+                places.add(placeDetail.getAddress().split("\\s+")[1]);
+
+                List<PlaceCategoryEntity> placeCategoryEntities = placeCategoryRepo.findByPlaceDetailId(
+                        placeDetail.getId());
+                categories.addAll(
+                        placeCategoryEntities.stream().map(PlaceCategoryEntity::getCategory).toList()
+                );
+            }
+
+            placeCategoryList.add(new PlaceCategory(
+                    searchText,
+                    new ArrayList<>(new HashSet<>(places)),
+                    new ArrayList<>(new HashSet<>(categories))
+            ));
+        }
+
+        log.info("Built PlaceCategory list: {}", placeCategoryList);
+
+        List<SearchKeywordDTO> searchKeywordDTOList = new ArrayList<>();
+
+        for (PlaceCategory placeCategory : placeCategoryList) {
+            SearchKeywordDTO searchKeywordDTO = SearchKeywordDTO.builder()
+                    .type("place")
+                    .options(placeCategory.category())
+                    .keyword(placeCategory.place().getFirst())
+                    .build();
+            searchKeywordDTOList.add(searchKeywordDTO);
+        }
+
+        log.info("Built SearchKeywordDTO list: {}", searchKeywordDTOList);
+
+        return searchKeywordDTOList;
     }
 }

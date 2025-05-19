@@ -20,6 +20,8 @@ import org.zerock.algoboza.domain.recommend.contents.DTO.UserInterestDTO.MetaDat
 import org.zerock.algoboza.domain.recommend.contents.DTO.UserInterestDTO.SearchKeywordDTO;
 import org.zerock.algoboza.domain.recommend.interestTracking.DTO.KeywordScoreDTO;
 import org.zerock.algoboza.domain.recommend.interestTracking.InterestKeywordService;
+import org.zerock.algoboza.domain.recommend.interestTracking.Service.naver.PlaceInterestService;
+import org.zerock.algoboza.entity.EmailIntegrationEntity;
 import org.zerock.algoboza.entity.UserEntity;
 import org.zerock.algoboza.entity.redis.KeywordScoreRedisEntity;
 import org.zerock.algoboza.entity.redis.RecommendResponseRedisEntity;
@@ -35,6 +37,7 @@ public class RecommendService {
     private final InterestKeywordService interestKeywordService;
     private final KeywordScoreRedisRepo keywordScoreRedisRepo;
     private final RecommendResponseRedisRepo recommendResponseRedisRepo;
+    private final PlaceInterestService placeInterestService;
     private final WebClient webClient;
     private final JsonUtils jsonUtils;
 
@@ -135,6 +138,7 @@ public class RecommendService {
      */
     private List<KeywordTypeScoreDTO> refreshUserRecommendation(UserEntity user) {
         List<KeywordTypeScoreDTO> interestScores = interestKeywordService.getInterestScore(user);
+
         List<TypeKeywordDTO> typeKeywordDTO = groupKeywordsByType(interestScores);
         UserResponse userResponse = createUserResponseFromInterest(user, typeKeywordDTO);
 
@@ -189,11 +193,16 @@ public class RecommendService {
      * 관심 키워드 기반 추천 생성
      */
     private UserResponse createUserResponseFromInterest(UserEntity user, List<TypeKeywordDTO> typeKeywordDTOList) {
-        List<SearchKeywordDTO> searchKeywords = typeKeywordDTOList.stream()
+        List<SearchKeywordDTO> searchKeywords = new ArrayList<>(typeKeywordDTOList.stream()
+                .filter(typeKeywordDTO -> typeKeywordDTO.type().equals(SHOPPING))
                 .flatMap(typeKeywordDTO -> identifyKeywords(typeKeywordDTO.type(), typeKeywordDTO.keywords()).stream()
                         .map(keyword -> new SearchKeywordDTO(keyword.keyword(), typeKeywordDTO.type(),
                                 keyword.options())))
-                .toList();
+                .toList());
+
+        // 장소는 따로 계산
+        List<SearchKeywordDTO> searchKeywordDTOList = placeInterestService.getSearchKeywordDTO(user.getId());
+        searchKeywords.addAll(searchKeywordDTOList);
 
         MetaData metaData = new MetaData("Seoul", "2001-02-25", "2025-04-10T12:00:00Z", "사용자가 작성한 노트");
         UserInterestDTO userInterest = new UserInterestDTO(Math.toIntExact(user.getId()), metaData, searchKeywords);

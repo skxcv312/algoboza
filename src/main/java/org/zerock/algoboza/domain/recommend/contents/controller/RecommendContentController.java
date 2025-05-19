@@ -13,6 +13,7 @@ import org.zerock.algoboza.domain.recommend.contents.DTO.KeywordTypeScoreDTO;
 import org.zerock.algoboza.domain.recommend.contents.DTO.TypeKeywordDTO;
 import org.zerock.algoboza.domain.recommend.contents.DTO.UserResponse;
 import org.zerock.algoboza.domain.recommend.contents.service.RecommendService;
+import org.zerock.algoboza.domain.recommend.contents.service.SomeThingElse;
 import org.zerock.algoboza.entity.UserEntity;
 import org.zerock.algoboza.global.JsonUtils;
 import org.zerock.algoboza.global.Response;
@@ -23,6 +24,7 @@ import org.zerock.algoboza.global.Response;
 @RequestMapping("/api/recommend")
 public class RecommendContentController {
     private final RecommendService recommendService;
+    private final SomeThingElse someThingElse;
     private final WebClient webClient = WebClient.create();
     private final JsonUtils jsonUtils;
 
@@ -46,10 +48,11 @@ public class RecommendContentController {
     public Response<?> getOtherRecommendation(
             @AuthenticationPrincipal UserEntity user
     ) {
+        UserResponse response = someThingElse.getOtherResponse(user);
 
         return Response.builder()
                 .status(HttpStatus.OK)
-                .data(user)
+                .data(someThingElse.adepter(response))
                 .build();
     }
 }
