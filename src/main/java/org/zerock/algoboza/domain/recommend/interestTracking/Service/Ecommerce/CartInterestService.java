@@ -65,8 +65,10 @@ public class CartInterestService extends WeightingInterest {
     // 키워드 목록 생성
     private List<String> createKeyword(List<CartItemCategoryEntity> cartItemCategoryEntities) {
         log.debug("Creating keywords from cart item categories");
+
         List<String> keywords = cartItemCategoryEntities.stream()
                 .map(CartItemCategoryEntity::getCategoryName)
+                .skip(Math.max(0, cartItemCategoryEntities.size() - 2))
                 .toList();
         log.info("Generated keywords: {}", keywords);
         return keywords;
@@ -87,7 +89,8 @@ public class CartInterestService extends WeightingInterest {
 
     @Override
     protected List<EventEntity> getEventsByRepository(Long id) {
-        List<EventEntity> events = eventRepo.findByEventTypeAndEmailIntegrationUserId(CART.getAction(), id);
+        List<EventEntity> events = eventRepo.findTop2ByEventTypeAndEmailIntegrationUserIdOrderByCreatedAtDesc(
+                CART.getAction(), id);
         return events;
     }
 

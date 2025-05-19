@@ -32,7 +32,9 @@ public class CategoryInterestService extends WeightingInterest {
     }
 
     private List<String> createKeyword(List<CategoryEntity> categoryEntities) {
-        return categoryEntities.stream().map(CategoryEntity::getCategory).toList();
+        return categoryEntities.stream().map(CategoryEntity::getCategory)
+                .skip(Math.max(0, categoryEntities.size() - 2))
+                .toList();
 
     }
 

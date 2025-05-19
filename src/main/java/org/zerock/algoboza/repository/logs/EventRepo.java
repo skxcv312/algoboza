@@ -10,6 +10,7 @@ import org.zerock.algoboza.entity.logs.EventEntity;
 public interface EventRepo extends JpaRepository<EventEntity, Long> {
     List<EventEntity> findByEventTypeAndEmailIntegrationUserId(String eventType, Long userId);
 
+    List<EventEntity> findTop2ByEventTypeAndEmailIntegrationUserIdOrderByCreatedAtDesc(String eventType, Long userId);
 
     Optional<List<EventEntity>> findByEmailIntegrationUserId(Long aLong);
 
