@@ -1,6 +1,9 @@
 package org.zerock.algoboza.domain.recommend.contents.service;
 
+import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -24,26 +27,32 @@ import org.zerock.algoboza.domain.recommend.interestTracking.Service.naver.Place
 import org.zerock.algoboza.entity.EmailIntegrationEntity;
 import org.zerock.algoboza.entity.UserEntity;
 import org.zerock.algoboza.entity.redis.KeywordScoreRedisEntity;
+import org.zerock.algoboza.entity.redis.KeywordTypeScoreEntity;
 import org.zerock.algoboza.entity.redis.RecommendResponseRedisEntity;
 import org.zerock.algoboza.global.JsonUtils;
+import org.zerock.algoboza.repository.UserRepo;
 import org.zerock.algoboza.repository.redis.KeywordScoreRedisRepo;
+import org.zerock.algoboza.repository.redis.KeywordTypeScoreRepo;
 import org.zerock.algoboza.repository.redis.RecommendResponseRedisRepo;
 
 @Log4j2
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class RecommendService {
 
     private final InterestKeywordService interestKeywordService;
     private final KeywordScoreRedisRepo keywordScoreRedisRepo;
+    private final KeywordTypeScoreRepo keywordTypeScoreRepo;
     private final RecommendResponseRedisRepo recommendResponseRedisRepo;
     private final PlaceInterestService placeInterestService;
     private final WebClient webClient;
+    private final UserRepo userRepo;
     private final JsonUtils jsonUtils;
 
     @Value("${server-url}")
     private String SERVER_URL;
-    int LIMIT_SIZE = 30;
+    int LIMIT_SIZE = 5;
     String SHOPPING = "shopping";
 
     /**
@@ -51,12 +60,34 @@ public class RecommendService {
      */
     public void saveKeywordScoresToRedis(Long userId, List<KeywordTypeScoreDTO> keywordScoreDTOList) {
         log.debug("saveKeywordScoresToRedis{}", keywordScoreDTOList.toString());
-        KeywordScoreRedisEntity redisEntity = KeywordScoreRedisEntity.builder()
-                .id(userId)
-                .scoreList(keywordScoreDTOList)
-                .eventUpdateNum(0)
-                .build();
+
+        UserEntity userEntity = userRepo.findById(userId).orElseThrow(() -> new RuntimeException("아이디가 없음"));
+
+        // 충돌 방지: 이미 있으면 그대로 사용, 없으면 새로 저장
+        KeywordScoreRedisEntity redisEntity = keywordScoreRedisRepo.findById(userId)
+                .map(existing -> {
+                    existing.setEventUpdateNum(0);
+                    return existing;
+                })
+                .orElseGet(() ->
+                        KeywordScoreRedisEntity.builder()
+                                .user(userEntity)
+                                .eventUpdateNum(0)
+                                .build()
+                );
+
         keywordScoreRedisRepo.save(redisEntity);
+        keywordTypeScoreRepo.deleteByKeywordScoreRedisEntityId(redisEntity.getId());
+        List<KeywordTypeScoreEntity> keywordTypeScoreEntityList = keywordScoreDTOList.stream()
+                .map(v -> KeywordTypeScoreEntity.builder()
+                        .keywordScoreRedisEntity(redisEntity)
+                        .type(v.type())
+                        .keyword(v.keyword())
+                        .score(v.score())
+                        .build())
+                .toList();
+
+        keywordTypeScoreRepo.saveAll(keywordTypeScoreEntityList);
     }
 
     /**
@@ -65,14 +96,22 @@ public class RecommendService {
 
     public void saveRecommendResponseToRedis(Long userId, UserResponse userResponse) {
         log.info("saveRecommendResponseToRedis {}", userResponse);
+
         String jsonResponse = jsonUtils.toJson(userResponse);
-        RecommendResponseRedisEntity recommendResponseRedisEntity = RecommendResponseRedisEntity.builder()
-                .userResponse(jsonResponse)
-                .id(userId)
-                .build();
+        UserEntity user = userRepo.findById(userId).orElseThrow(RuntimeException::new);
 
-        recommendResponseRedisRepo.save(recommendResponseRedisEntity);
+        // 기존 엔티티가 있는지 확인하고 업데이트하거나 새로 생성
+        RecommendResponseRedisEntity entity = recommendResponseRedisRepo.findById(userId)
+                .map(existing -> {
+                    existing.setUserResponse(jsonResponse);
+                    return existing;
+                })
+                .orElseGet(() -> RecommendResponseRedisEntity.builder()
+                        .userResponse(jsonResponse)
+                        .user(user)
+                        .build());
 
+        recommendResponseRedisRepo.save(entity);
     }
 
     /**
@@ -93,18 +132,20 @@ public class RecommendService {
      * Redis 데이터 유효성 검사
      */
     public boolean isRedisDataValid(KeywordScoreRedisEntity scores) {
-        return scores != null && scores.getScoreList() != null && scores.getEventUpdateNum() < LIMIT_SIZE;
+        return scores != null && scores.getEventUpdateNum() < LIMIT_SIZE;
     }
 
     /**
      * Redis 엔티티를 DTO 리스트로 변환
      */
     public List<KeywordTypeScoreDTO> convertRedisDataToDTO(KeywordScoreRedisEntity scores) {
-        return scores.getScoreList().stream()
+        List<KeywordTypeScoreEntity> keywordScoreRedisEntity = keywordTypeScoreRepo.findByKeywordScoreRedisEntity(
+                scores);
+        return keywordScoreRedisEntity.stream()
                 .map(v -> KeywordTypeScoreDTO.builder()
-                        .keyword(v.keyword())
-                        .score(v.score())
-                        .type(v.type())
+                        .keyword(v.getKeyword())
+                        .score(v.getScore())
+                        .type(v.getType())
                         .build())
                 .toList();
     }
@@ -137,12 +178,10 @@ public class RecommendService {
      * 관심 점수 계산 + 추천 생성 + Redis 저장까지 한 번에 처리
      */
     private List<KeywordTypeScoreDTO> refreshUserRecommendation(UserEntity user) {
+
+        recommendResponseRedisRepo.deleteByUserId(user.getId());
         List<KeywordTypeScoreDTO> interestScores = interestKeywordService.getInterestScore(user);
 
-        List<TypeKeywordDTO> typeKeywordDTO = groupKeywordsByType(interestScores);
-        UserResponse userResponse = createUserResponseFromInterest(user, typeKeywordDTO);
-
-        saveRecommendResponseToRedis(user.getId(), userResponse);
         saveKeywordScoresToRedis(user.getId(), interestScores);
 
         return interestScores;
@@ -179,10 +218,14 @@ public class RecommendService {
      * 추천 콘텐츠 생성
      */
     public UserResponse recommendContent(UserEntity user) {
-        KeywordScoreRedisEntity scores = fetchKeywordScoresFromRedis(user.getId());
         RecommendResponseRedisEntity recommendResponseRedisEntity = fetchRecommendResponseFromRedis(user.getId());
-        if (!isRedisDataValid(scores) || recommendResponseRedisEntity == null) {
-            throw new RuntimeException("Redis no results saved");
+        if (recommendResponseRedisEntity == null) {
+            List<KeywordTypeScoreDTO> interestScores = getKeywordTypeScore(user);
+            List<TypeKeywordDTO> typeKeywordDTO = groupKeywordsByType(interestScores);
+            UserResponse userResponse = createUserResponseFromInterest(user, typeKeywordDTO);
+
+            saveRecommendResponseToRedis(user.getId(), userResponse);
+            return userResponse;
         }
         String json = recommendResponseRedisEntity.getUserResponse();
         return jsonUtils.fromJson(json, UserResponse.class);
@@ -204,7 +247,7 @@ public class RecommendService {
         List<SearchKeywordDTO> searchKeywordDTOList = placeInterestService.getSearchKeywordDTO(user.getId());
         searchKeywords.addAll(searchKeywordDTOList);
 
-        MetaData metaData = new MetaData("Seoul", "2001-02-25", "2025-04-10T12:00:00Z", "사용자가 작성한 노트");
+        MetaData metaData = new MetaData("Seoul", user.getBirthDate(), LocalDateTime.now().toString(), "사용자가 작성한 노트");
         UserInterestDTO userInterest = new UserInterestDTO(Math.toIntExact(user.getId()), metaData, searchKeywords);
         log.info("userInterest {}", userInterest);
 

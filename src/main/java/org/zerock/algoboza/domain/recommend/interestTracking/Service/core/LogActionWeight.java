@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum LogActionWeight {
-    SEARCH("search", 5),
+    SEARCH("search", 12),
     PRODUCT("product", 3),
-    CATEGORY("category", 2),
+    CATEGORY("category", 5),
     CART("cart", 7),
     PLACE("naver_place", 4),
 

@@ -3,6 +3,8 @@ package org.zerock.algoboza.domain.recommend.interestTracking.Service.core;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.*;
+import java.util.stream.Stream;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,10 @@ public abstract class WeightingInterest {
     // ViewRepo를 자동 주입하여 사용
     @Autowired
     private ViewRepo viewRepo;
+
+    // ExecutorService for parallel processing
+    private final ExecutorService executorService = Executors.newFixedThreadPool(
+            Runtime.getRuntime().availableProcessors());
 
     /**
      * 이벤트 타입별, 시단대별, 원하는 엔티티를 분류하기 위한 추상 메서드
@@ -41,15 +47,19 @@ public abstract class WeightingInterest {
      * 타입별 관심키워드 호출함 사용자 관심도 점수를 계산하여 반환하는 메서드
      */
     public List<KeywordScoreDTO> getInterest(Long id) {
-        // 이벤트 타입별 엔티티 분류
-        List<EventEntity> eventEntityList = getEventsByRepository(id);
-
-        // 초기 키워드 점수 리스트 설정
-        List<KeywordScoreDTO> keywordScoreDTOList = setKeywordScore(eventEntityList);
-
-        log.info("keywordScoreDTOList{}", keywordScoreDTOList);
-
-        return keywordScoreDTOList;
+        // Submit event fetching and keyword scoring as asynchronous tasks
+        Callable<List<EventEntity>> eventTask = () -> getEventsByRepository(id);
+        Future<List<EventEntity>> eventFuture = executorService.submit(eventTask);
+        try {
+            List<EventEntity> eventEntityList = eventFuture.get();
+            Callable<List<KeywordScoreDTO>> keywordTask = () -> setKeywordScore(eventEntityList);
+            Future<List<KeywordScoreDTO>> keywordFuture = executorService.submit(keywordTask);
+            List<KeywordScoreDTO> keywordScoreDTOList = keywordFuture.get();
+            log.info("keywordScoreDTOList{}", keywordScoreDTOList);
+            return keywordScoreDTOList;
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException("Failed to process interest data asynchronously", e);
+        }
     }
 
     /**
@@ -76,21 +86,17 @@ public abstract class WeightingInterest {
      * @return
      */
     protected List<KeywordScoreDTO> setKeywordScore(List<EventEntity> eventEntitieList) {
-        List<KeywordScoreDTO> keywordScoreList = new ArrayList<>();
-        for (EventEntity event : eventEntitieList) {
-            // 가중치 계산
-            double weightingViewTime = calculateWeightingViewTime(event);
-            if (weightingViewTime == 0) {
-                continue;  // 가중치가 0이면 건너뜀
-            }
-            // 키워드 추출 후 점수 부여
-            List<KeywordScoreDTO> keywordList = keywordCalculation(event);
-
-            // RowKeywordScore 생성 및 추가
-            List<KeywordScoreDTO> newKeywordScores = createKeywordScore(keywordList, weightingViewTime);
-            keywordScoreList.addAll(newKeywordScores);
-        }
-        return keywordScoreList;
+        // Parallelize event processing using parallelStream
+        return eventEntitieList.parallelStream()
+                .flatMap(event -> {
+                    double weightingViewTime = calculateWeightingViewTime(event);
+                    if (weightingViewTime == 0) {
+                        return Stream.empty();
+                    }
+                    List<KeywordScoreDTO> keywordList = keywordCalculation(event);
+                    return createKeywordScore(keywordList, weightingViewTime).stream();
+                })
+                .toList();
     }
 
     /**

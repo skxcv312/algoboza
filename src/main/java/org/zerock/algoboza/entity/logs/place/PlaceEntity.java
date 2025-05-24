@@ -12,6 +12,7 @@ import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -23,6 +24,7 @@ import org.zerock.algoboza.entity.logs.EventEntity;
 @SuperBuilder
 @NoArgsConstructor
 @Getter
+@ToString
 public class PlaceEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

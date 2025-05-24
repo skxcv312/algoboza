@@ -149,24 +149,30 @@ public class InterestKeywordService {
 
 
     public List<KeywordTypeScoreDTO> getInterestScore(UserEntity userEntity) {
-        List<KeywordTypeScoreDTO> interestScores = new ArrayList<>();
         List<EmailIntegrationEntity> emailIntegrationEntityList = getSameUserEntity(userEntity.getId());
 
-        for (EmailIntegrationEntity emailIntegrationEntity : emailIntegrationEntityList) {
-            // 관심 키워드 수집 메서드 호출
-            if (eventRepo.findByEmailIntegrationUserId(emailIntegrationEntity.getId()).isPresent()) {
-                interestScores.addAll(
-                        collectShoppingInterestScores(emailIntegrationEntity.getId()));
+        List<KeywordTypeScoreDTO> allScores = new ArrayList<>();
 
-                interestScores.addAll(
-                        collectPlaceInterestScores(emailIntegrationEntity.getId()));
+        List<CompletableFuture<List<KeywordTypeScoreDTO>>> futures = emailIntegrationEntityList.stream()
+                .filter(emailIntegrationEntity -> eventRepo.findByEmailIntegrationUserId(emailIntegrationEntity.getId())
+                        .isPresent())
+                .map(emailIntegrationEntity -> CompletableFuture.supplyAsync(() -> {
+                    List<KeywordTypeScoreDTO> scores = new ArrayList<>();
+                    scores.addAll(collectShoppingInterestScores(emailIntegrationEntity.getId()));
+                    scores.addAll(collectPlaceInterestScores(emailIntegrationEntity.getId()));
+                    return scores;
+                }))
+                .toList();
+
+        for (CompletableFuture<List<KeywordTypeScoreDTO>> future : futures) {
+            try {
+                allScores.addAll(future.get());
+            } catch (InterruptedException | ExecutionException e) {
+                log.error("비동기 처리 중 예외 발생", e);
             }
-
         }
 
-        log.info("interestScores {}", interestScores);
-        return mergeDuplicateKeywordScores(interestScores);
-
+        return mergeDuplicateKeywordScores(allScores);
     }
 
 

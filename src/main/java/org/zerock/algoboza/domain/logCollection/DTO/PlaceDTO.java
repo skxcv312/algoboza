@@ -14,6 +14,7 @@ import org.zerock.algoboza.domain.logCollection.DTO.base.BaseLogDTO;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PlaceDTO extends BaseLogDTO {
+
     private String searchText;
     @NotNull
     private PlaceDetailDTO placeDtails;

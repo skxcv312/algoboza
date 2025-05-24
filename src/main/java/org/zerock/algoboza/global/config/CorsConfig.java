@@ -19,7 +19,9 @@ public class CorsConfig {
         config.setAllowedOrigins(
                 List.of("http://192.168.219.174:5173",
                         "http://localhost:5173",
-                        "chrome-extension://lflppaeeeiihpeppipkfbgbohebnlpcc" // 확장자
+                        "chrome-extension://lflppaeeeiihpeppipkfbgbohebnlpcc",// 확장자,
+                        "chrome-extension://ofplmlpjpdnpgiaphkopapnmcicnfapf"
+
                 ));
 
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));

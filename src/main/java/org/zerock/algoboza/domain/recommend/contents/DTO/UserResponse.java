@@ -43,5 +43,7 @@ public class UserResponse {
         private String address;
         private String category;
         private String link;
+        private Double lat;
+        private Double lng;
     }
 }

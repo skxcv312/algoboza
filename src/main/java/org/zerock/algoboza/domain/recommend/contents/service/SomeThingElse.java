@@ -14,10 +14,12 @@ import org.zerock.algoboza.domain.recommend.contents.DTO.UserResponse.NaverPlace
 import org.zerock.algoboza.domain.recommend.contents.DTO.UserResponse.NaverResult;
 import org.zerock.algoboza.entity.UserEntity;
 import org.zerock.algoboza.entity.redis.KeywordScoreRedisEntity;
+import org.zerock.algoboza.entity.redis.KeywordTypeScoreEntity;
 import org.zerock.algoboza.entity.redis.RecommendResponseRedisEntity;
 import org.zerock.algoboza.global.JsonUtils;
 import org.zerock.algoboza.repository.UserRepo;
 import org.zerock.algoboza.repository.redis.KeywordScoreRedisRepo;
+import org.zerock.algoboza.repository.redis.KeywordTypeScoreRepo;
 import org.zerock.algoboza.repository.redis.RecommendResponseRedisRepo;
 
 @Log4j2
@@ -25,6 +27,7 @@ import org.zerock.algoboza.repository.redis.RecommendResponseRedisRepo;
 @RequiredArgsConstructor
 public class SomeThingElse {
     private final KeywordScoreRedisRepo keywordScoreRedisRepo;
+    private final KeywordTypeScoreRepo keywordTypeScoreRepo;
     private final RecommendService recommendService;
     private final RecommendResponseRedisRepo recommendResponseRedisRepo;
     private final UserRepo userRepo;
@@ -40,7 +43,17 @@ public class SomeThingElse {
         if (keywordScoreRedisEntity == null) {
             return null;
         }
-        return getTopKeyword(keywordScoreRedisEntity.getScoreList());
+        List<KeywordTypeScoreEntity> keywordTypeScoreEntityList = keywordTypeScoreRepo.findByKeywordScoreRedisEntity(
+                keywordScoreRedisEntity);
+
+        List<KeywordTypeScoreDTO> keywordTypeScoreList = keywordTypeScoreEntityList.stream()
+                .map(v -> KeywordTypeScoreDTO.builder()
+                        .keyword(v.getKeyword())
+                        .score(v.getScore())
+                        .type(v.getType())
+                        .build())
+                .toList();
+        return getTopKeyword(keywordTypeScoreList);
     }
 
     private TopKeyword getTopKeyword(List<KeywordTypeScoreDTO> keywordTypeScoreList) {
@@ -113,7 +126,9 @@ public class SomeThingElse {
             String image,
             String lprice,
             String adrress,
-            String category
+            String category,
+            Double lat,
+            Double lng
     ) {
     }
 
@@ -130,7 +145,7 @@ public class SomeThingElse {
                 }
                 List<someThing> list = entry.getValue().stream()
                         .map(nr -> new someThing(nr.getTitle(), "shopping", nr.getLink(), nr.getImage(), nr.getLprice(),
-                                null, null))
+                                null, null, null, null))
                         .toList();
                 result.put(entry.getKey(), list);
             }
@@ -150,7 +165,9 @@ public class SomeThingElse {
                                 null,
                                 null,
                                 np.getAddress(),
-                                np.getCategory()
+                                np.getCategory(),
+                                np.getLat(),
+                                np.getLng()
                         ))
                         .toList();
                 result.put(entry.getKey(), list);

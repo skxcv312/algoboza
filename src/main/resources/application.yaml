@@ -44,6 +44,13 @@ spring:
   # Logging Setting
   logging:
     level:
+      org:
+        hibernate:
+          SQL: INFO
+          orm:
+            jdbc:
+              bind: INFO
+            sql: INFO
       root: INFO
     logback:
       rolling-policy:

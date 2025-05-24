@@ -86,6 +86,7 @@ public class PlaceInterestService {
     public List<KeywordScoreDTO> getInterest(Long id) {
         // 이벤트 타입별 엔티티 분류
         List<EventEntity> eventEntityList = getEventsByRepository(id);
+        log.info("eventEntityList {}", eventEntityList);
 
         List<KeywordScoreDTO> placeResults = new ArrayList<>();
         List<KeywordScoreDTO> addressResults = new ArrayList<>();
@@ -129,6 +130,8 @@ public class PlaceInterestService {
         List<EmailIntegrationEntity> emailIntegrationEntityList = emailIntegrationRepo.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("email is null"));
 
+        log.info("userId {}", userId);
+
         // Group event IDs by searchText from their associated PlaceEntity
         Map<String, List<Long>> searchTextToEventIds = new HashMap<>();
         for (EmailIntegrationEntity emailIntegrationEntity : emailIntegrationEntityList) {
@@ -166,22 +169,64 @@ public class PlaceInterestService {
             List<String> categories = new ArrayList<>();
 
             for (Long eventId : eventIds) {
+                log.info("Processing eventId: {}", eventId);
                 PlaceEntity placeEntity = placeRepo.findByEventId(eventId);
+                if (placeEntity == null) {
+                    log.warn("placeEntity is null for eventId: {}", eventId);
+                } else {
+                    log.info("placeEntity: {}", placeEntity);
+                }
+
                 PlaceDetailEntity placeDetail = placeDetailRepo.findByPlaceId(placeEntity.getId());
+                if (placeDetail == null) {
+                    log.warn("placeDetail is null for placeEntityId: {}", placeEntity.getId());
+                } else {
+                    log.info("placeDetail: {}", placeDetail);
+                }
                 places.add(placeDetail.getAddress().split("\\s+")[1]);
 
                 List<PlaceCategoryEntity> placeCategoryEntities = placeCategoryRepo.findByPlaceDetailId(
                         placeDetail.getId());
+                log.info("placeCategoryEntities {}", placeCategoryEntities);
                 categories.addAll(
                         placeCategoryEntities.stream().map(PlaceCategoryEntity::getCategory).toList()
                 );
             }
 
+            // Count place frequencies
+            Map<String, Long> placeFrequencyMap = places.stream()
+                    .collect(Collectors.groupingBy(p -> p, Collectors.counting()));
+
+            // Determine the most frequent place
+            String mostFrequentPlace = placeFrequencyMap.entrySet().stream()
+                    .max(Map.Entry.comparingByValue())
+                    .map(Map.Entry::getKey)
+                    .orElse("");
+
+            // Get top 4 most frequent categories
+            Map<String, Long> categoryFrequencyMap = categories.stream()
+                    .collect(Collectors.groupingBy(c -> c, Collectors.counting()));
+
+            List<String> topCategories = categoryFrequencyMap.entrySet().stream()
+                    .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+                    .limit(4)
+                    .map(Map.Entry::getKey)
+                    .toList();
+
+            // Replace old PlaceCategory constructor with frequency-based results
+            placeCategoryList.add(new PlaceCategory(
+                    searchText,
+                    List.of(mostFrequentPlace),
+                    topCategories
+            ));
+
+            /*
             placeCategoryList.add(new PlaceCategory(
                     searchText,
                     new ArrayList<>(new HashSet<>(places)),
                     new ArrayList<>(new HashSet<>(categories))
             ));
+            */
         }
 
         log.info("Built PlaceCategory list: {}", placeCategoryList);
