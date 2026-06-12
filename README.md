@@ -54,7 +54,7 @@ algoboza/                  # Spring Boot 메인 API 서버
 - 상품, 장소, 유튜브 추천 요청
 - 마이페이지 차트와 북마크 관리
 
-### `algoboza-api-server`
+### `algoboza-api-server` [바로가기](https://github.com/skxcv312/algoboza-api-server)
 
 - AI 기반 쇼핑·장소 키워드 그룹화
 - 관심 점수 기반 유튜브 검색어 생성
@@ -62,9 +62,8 @@ algoboza/                  # Spring Boot 메인 API 서버
 - 영상 자막 추출 및 요약
 - 네이버 쇼핑·지역 검색 API 연동
 
-### `logdata-extention`
+### `logdata-extention` [바로가기](https://github.com/skxcv312/algoboza-log-collection)
 
-- Chrome Extension Manifest V3 기반 행동 추적
+- Chrome Extension 기반 행동 추적
 - 사이트별 상품, 카테고리, 검색, 장바구니 데이터 수집
 - 체류 시간, 스크롤, 클릭 로그 생성
-- 로그 서버 전송 및 JSON 다운로드
